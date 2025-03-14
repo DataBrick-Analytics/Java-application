@@ -21,7 +21,7 @@ public class Main {
 
         Thread.sleep(1000);
 
-        System.out.println("[ " + LocalDateTime.now().format(dtf) + "] Vamos iniciar a registar as informações no sistema.");
+        System.out.println("[ " + LocalDateTime.now().format(dtf) + " ] Vamos iniciar a registar as informações no sistema.");
 
         List<Address> addresses = new ArrayList<>();
         Character continuar;
@@ -29,8 +29,6 @@ public class Main {
         do {
             try {
                 System.out.println();
-                LocalDateTime registerDate = LocalDateTime.now();
-
                 System.out.print("Rua: ");
                 String road = sc.nextLine();
 
@@ -44,10 +42,11 @@ public class Main {
                 System.out.print("CEP: ");
                 String zipCode = sc.nextLine();
 
+                LocalDateTime registerDate = LocalDateTime.now();
                 addresses.add(new Address(registerDate, road, number, neighborhood, zipCode));
 
                 System.out.println();
-                System.out.print("[ " + LocalDateTime.now().format(dtf) + "] Registro concluído. Você deseja cadastrar um novo endereço? (S/N) ");
+                System.out.print("[ " + LocalDateTime.now().format(dtf) + " ] Registro concluído. Você deseja cadastrar um novo endereço? (S/N) ");
                 continuar = sc.next().toUpperCase().charAt(0);
                 sc.nextLine();
             } catch (Exception e) {
@@ -58,13 +57,13 @@ public class Main {
         } while (continuar.equals('S') || continuar.equals('Y'));
 
         System.out.println();
-        System.out.println("[ " + LocalDateTime.now().format(dtf) + "] As informações foram coletadas com sucesso!");
-        System.out.println("[ " + LocalDateTime.now().format(dtf) + "] Processando...");
+        System.out.println("[ " + LocalDateTime.now().format(dtf) + " ] As informações foram coletadas com sucesso!");
+        System.out.println("[ " + LocalDateTime.now().format(dtf) + " ] Processando...");
 
         Thread.sleep(2000);
         System.out.println();
 
-        System.out.println("[ " + LocalDateTime.now().format(dtf) + "] Processamento concluído. Dados obtidos: ");
+        System.out.println("[ " + LocalDateTime.now().format(dtf) + " ] Processamento concluído. Dados obtidos: ");
 
         System.out.println("+----------------------+----------------------+----------------------+----------------------+----------------------+");
         System.out.printf("| %-20s | %-20s | %-20s | %-20s | %-20s |\n", "Hora do registro", "Rua", "Número", "Bairro", "CEP");
@@ -73,6 +72,12 @@ public class Main {
             System.out.printf("| %-20s | %-20s | %-20d | %-20s | %-20s |\n", address.getRegisterDate().format(dtf), address.getRoad(), address.getNumber(), address.getNeighborhood(), address.getZipCode());
             System.out.println("+----------------------+----------------------+----------------------+----------------------+----------------------+");
         }
+
+        System.out.println();
+
+        System.out.println("=------[ " + LocalDateTime.now().format(dtf) + " ]------=");
+        System.out.println("         Sistema finalizado!         ");
+        System.out.println("=-----------------------------------=");
 
         sc.close();
     }
