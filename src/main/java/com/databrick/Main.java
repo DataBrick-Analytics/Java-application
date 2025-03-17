@@ -7,16 +7,18 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 public class Main {
+
+    private static final Logger logger = Logger.getLogger(Main.class.getName());
+
     public static void main(String[] args) throws InterruptedException {
 
         Scanner sc = new Scanner(System.in);
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
-        System.out.println("=-----[ " + LocalDateTime.now().format(dtf) + " ]-----=");
-        System.out.println("         Sistema iniciado!         ");
-        System.out.println("=---------------------------------=");
+        logger.info("Sistema iniciado com sucesso!");
         System.out.println();
 
         Thread.sleep(1000);
@@ -29,28 +31,35 @@ public class Main {
         do {
             try {
                 System.out.println();
+                Thread.sleep(500);
                 System.out.print("Rua: ");
-                String road = sc.nextLine();
+                Thread.sleep(1000);
+                System.out.println("Haddock Lobo");
 
+                Thread.sleep(500);
                 System.out.print("Número: ");
-                Integer number = sc.nextInt();
-                sc.nextLine();
+                Thread.sleep(1000);
+                System.out.println("595");
 
+                Thread.sleep(500);
                 System.out.print("Bairro: ");
-                String neighborhood = sc.nextLine();
+                Thread.sleep(1000);
+                System.out.println("Cerqueira César");
 
+                Thread.sleep(500);
                 System.out.print("CEP: ");
-                String zipCode = sc.nextLine();
+                Thread.sleep(1000);
+                System.out.println("01414-001");
 
                 LocalDateTime registerDate = LocalDateTime.now();
-                addresses.add(new Address(registerDate, road, number, neighborhood, zipCode));
+                addresses.add(new Address(registerDate, "Haddock Lobo", 595, "Cerqueira César", "01414-001"));
 
                 System.out.println();
                 System.out.print("[ " + LocalDateTime.now().format(dtf) + " ] Registro concluído. Você deseja cadastrar um novo endereço? (S/N) ");
                 continuar = sc.next().toUpperCase().charAt(0);
                 sc.nextLine();
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                logger.severe(e.getMessage());
                 break;
             }
 
@@ -74,10 +83,10 @@ public class Main {
         }
 
         System.out.println();
+        Thread.sleep(1000);
 
-        System.out.println("=------[ " + LocalDateTime.now().format(dtf) + " ]------=");
-        System.out.println("         Sistema finalizado!         ");
-        System.out.println("=-----------------------------------=");
+        logger.info("Sistema finalizado!");
+        Thread.sleep(1000);
 
         sc.close();
     }
