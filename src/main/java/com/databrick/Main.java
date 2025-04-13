@@ -1,6 +1,8 @@
 package com.databrick;
 
+import com.databrick.db.ConnectionBD;
 import com.databrick.entity.Address;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -14,6 +16,9 @@ public class Main {
     private static final Logger logger = Logger.getLogger(Main.class.getName());
 
     public static void main(String[] args) throws InterruptedException {
+        //Conectando o banco
+        ConnectionBD conexao = new ConnectionBD();
+        JdbcTemplate template = new JdbcTemplate(conexao.getConexao());
 
         Scanner sc = new Scanner(System.in);
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
