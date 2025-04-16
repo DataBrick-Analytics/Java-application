@@ -1,7 +1,9 @@
 package com.databrick;
 
 import com.databrick.service.PropertyService;
+import com.databrick.service.SecurityService;
 import com.databrick.utils.LoggingUtility;
+import org.apache.logging.log4j.Level;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -14,22 +16,27 @@ public class Main {
 
     private static final LoggingUtility log = new LoggingUtility();
     private static PropertyService propertyService;
+    private static SecurityService securityService;
 
     public static void main(String[] args) {
 
-        log.registerLog("Aplicação iniciada", "info");
+        log.registerLog(Level.INFO, "Aplicação iniciada");
 
         Path pathFile = Path.of("database.xlsx");
         try (InputStream file = Files.newInputStream(pathFile);) {
             Workbook workbook = new XSSFWorkbook(file); // Instancia o arquivo como um objeto Workbook para podermos manipular as suas informações
             Sheet sheet = workbook.getSheetAt(0); // Pega a primeira planilha do arquivo
 
-            log.registerLog("Iniciando leitura dos valores das células", "info");
-            propertyService.processData(sheet);
-            log.registerLog("Leitura dos valores finalizada", "info");
+            log.registerLog(Level.INFO, "Iniciando leitura dos valores das células");
+            if (pathFile.endsWith("dadosPropriedades.xlsx")) {
+                propertyService.processDataProperty(sheet);
+            } else {
+                securityService.processDataSecurity(sheet);
+            }
+            log.registerLog(Level.INFO, "Leitura dos valores finalizada");
 
         } catch (Exception e) {
-            log.registerLog("Error ao executar a aplicação: " + e.getMessage(), "FATAL");
+            log.registerLog(Level.FATAL, "Error ao executar a aplicação: " + e.getMessage());
         }
 
     }
