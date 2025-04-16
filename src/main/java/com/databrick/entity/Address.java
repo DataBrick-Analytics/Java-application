@@ -1,41 +1,41 @@
 package com.databrick.entity;
 
-import java.time.LocalDateTime;
+import com.databrick.enums.zoneEnum;
 
 public class Address {
 
-    private LocalDateTime registerDate;
-    private String road;
+    private String cep;
     private Integer number;
-    private String neighborhood;
-    private String zipCode;
+    private String addressType;
+    private String addressName;
+    private String fullAddress;
+    private String state;
+    private String district;
+    private zoneEnum zone;
+    private String latitude;
+    private String longitude;
+    private String city;
 
-    public Address(LocalDateTime registerDate, String road, Integer number, String neighborhood, String zipCode) {
-        this.registerDate = registerDate;
-        this.road = road;
-        this.number = number;
-        this.neighborhood = neighborhood;
-        this.zipCode = zipCode;
+    public Address(String cep, String number, String addressType, String addressName, String fullAddress, String state, String district, String zone, String latitude, String longitude, String city) {
+        this.cep = cep;
+        this.number = Integer.parseInt(number);
+        this.addressType = addressType;
+        this.addressName = addressName;
+        this.fullAddress = fullAddress;
+        this.state = state;
+        this.district = district;
+        this.zone = zoneEnum.valueOf(zoneEnum.class, zone.toUpperCase());
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.city = city;
     }
 
-    public Address() {
-
+    public String getCep() {
+        return cep;
     }
 
-    public LocalDateTime getRegisterDate() {
-        return registerDate;
-    }
-
-    public void setRegisterDate(LocalDateTime registerDate) {
-        this.registerDate = registerDate;
-    }
-
-    public String getRoad() {
-        return road;
-    }
-
-    public void setRoad(String road) {
-        this.road = road;
+    public void setCep(String cep) {
+        this.cep = cep;
     }
 
     public Integer getNumber() {
@@ -46,19 +46,75 @@ public class Address {
         this.number = number;
     }
 
-    public String getNeighborhood() {
-        return neighborhood;
+    public String getAddressType() {
+        return addressType;
     }
 
-    public void setNeighborhood(String neighborhood) {
-        this.neighborhood = neighborhood;
+    public void setAddressType(String addressType) {
+        this.addressType = addressType;
     }
 
-    public String getZipCode() {
-        return zipCode;
+    public String getAddressName() {
+        return addressName;
     }
 
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
+    public void setAddressName(String addressName) {
+        this.addressName = addressName;
+    }
+
+    public String getFullAddress() {
+        return fullAddress;
+    }
+
+    public void setFullAddress(String fullAddress) {
+        this.fullAddress = fullAddress;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(String district) {
+        this.district = district;
+    }
+
+    public zoneEnum getZone() {
+        return zone;
+    }
+
+    public void setZone(zoneEnum zone) {
+        this.zone = zone;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 }
