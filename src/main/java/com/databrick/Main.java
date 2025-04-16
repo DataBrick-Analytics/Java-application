@@ -1,6 +1,8 @@
 package com.databrick;
 
+import com.databrick.db.ConnectionBD;
 import com.databrick.entity.Address;
+import org.springframework.jdbc.core.JdbcTemplate;
 import com.databrick.entity.Property;
 import com.databrick.entity.Value;
 import org.apache.poi.ss.usermodel.Row;
@@ -21,6 +23,9 @@ public class Main {
     private static final Logger logger = Logger.getLogger(Main.class.getName());
 
     public static void main(String[] args) {
+
+        ConnectionBD conexao = new ConnectionBD();
+        JdbcTemplate template = new JdbcTemplate(conexao.getConexao());
 
         Path pathFile = Path.of("database.xlsx");
         try (InputStream file = Files.newInputStream(pathFile);) {
