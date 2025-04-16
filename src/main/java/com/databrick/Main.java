@@ -4,6 +4,12 @@ import com.databrick.service.PropertyService;
 import com.databrick.service.SecurityService;
 import com.databrick.utils.LoggingUtility;
 import org.apache.logging.log4j.Level;
+import com.databrick.db.ConnectionBD;
+import com.databrick.entity.Address;
+import org.springframework.jdbc.core.JdbcTemplate;
+import com.databrick.entity.Property;
+import com.databrick.entity.Value;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -19,8 +25,10 @@ public class Main {
     private static SecurityService securityService;
 
     public static void main(String[] args) {
-
         log.registerLog(Level.INFO, "Aplicação iniciada");
+        
+        ConnectionBD conexao = new ConnectionBD();
+        JdbcTemplate template = new JdbcTemplate(conexao.getConexao());
 
         Path pathFile = Path.of("database.xlsx");
         try (InputStream file = Files.newInputStream(pathFile);) {
