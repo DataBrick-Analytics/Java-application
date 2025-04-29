@@ -13,7 +13,6 @@ public class Security {
     private Integer unintentionalHomicideTraffic;
     private Integer unintentionalHomicide;
     private String region;
-    private Integer regionId;
 
     public Security(String policeStation, String theftsByRegion, String cargoRobbery, String robberies, String vehicleRobbery, String vehicleTheft, String violentThefts, String intentionalHomicideTraffic, String unintentionalHomicideTraffic, String unintentionalHomicide, String region, String regionId) {
         this.policeStation = policeStation;
@@ -27,7 +26,6 @@ public class Security {
         this.unintentionalHomicideTraffic = Integer.valueOf(unintentionalHomicideTraffic);
         this.unintentionalHomicide = Integer.valueOf(unintentionalHomicide);
         this.region = region;
-        this.regionId = Integer.valueOf(regionId);
     }
 
     public String getPoliceStation() {
