@@ -10,7 +10,6 @@ public class Property {
     private Double builtAream2;
     private Address address;
     private String cityIBGE;
-    private String ddd;
 
     public Property(Value value, String registryOffice, String propertyRegistration, String sqlStatus, String landAream2, String builtAream2, Address address, String cityIBGE, String ddd) {
         this.value = value;

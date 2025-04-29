@@ -86,8 +86,8 @@ public class Address {
         this.district = district;
     }
 
-    public zoneEnum getZone() {
-        return zone;
+    public String getZone() {
+        return zone.toString();
     }
 
     public void setZone(zoneEnum zone) {
