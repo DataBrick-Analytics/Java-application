@@ -3,7 +3,6 @@ package com.databrick.service;
 import com.databrick.config.S3Provider;
 import com.databrick.utils.LoggingUtility;
 import org.apache.logging.log4j.Level;
-import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.core.sync.ResponseTransformer;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -11,7 +10,6 @@ import software.amazon.awssdk.services.s3.model.Bucket;
 import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
-import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.ListObjectsRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
@@ -28,7 +26,7 @@ import java.util.UUID;
 public class S3Service {
 
     private final S3Client s3Client = new S3Provider().getS3Client();
-    private final LoggingUtility log = new LoggingUtility();
+    private final LoggingUtility log = new LoggingUtility(S3Service.class.getName());
     private String bucketName;
 
     public S3Service(String bucketName) {
@@ -43,7 +41,7 @@ public class S3Service {
             s3Client.createBucket(createBucketRequest);
             log.registerLog(Level.INFO, "Bucket criado com sucesso");
         } catch (S3Exception e) {
-            System.err.println("Erro ao criar o bucket: " + e.getMessage());
+        log.registerLog(Level.ERROR, "Erro ao criar o bucket: " + e.getMessage());
         }
     }
 

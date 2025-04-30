@@ -1,21 +1,51 @@
 package com.databrick.utils;
 
+import com.databrick.service.JDBCService;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LoggingUtility {
 
-    private Logger log;
+    private String processType;
+    private final JDBCService jdbcService = new JDBCService();
+
+    public LoggingUtility(String processType) {
+        this.processType = processType;
+    }
+
+    public String getProcessType() {
+        return processType;
+    }
+
+    public void setProcessType(String processType) {
+        this.processType = processType;
+    }
 
     public void registerLog(Level level, String message) {
-        String sqlScript = "INSERT INTO tb_logs (data_hora, tipo_processo, status, mensagem, usuario) VALUES (?, ?, ?, ?, ?)";
+        List<String> values = new ArrayList<>();
 
-        // TODO validação e integração dos campos
+        if (level != null && message != null) {
+            String dateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+            String user = "System";
 
-//        try () {
-//            // TODO conectar com o banco
-//        } catch (Exception e) {
-//            // TODO logar no console o erro de conexão
-//        }
+            values.add(dateTime);
+            values.add(getProcessType());
+            values.add(level.toString());
+            values.add(message);
+            values.add(user);
+
+            jdbcService.saveLog(values);
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("[").append(dateTime).append("] ");
+            sb.append("[").append(getProcessType()).append("] ");
+            sb.append("[").append(level.toString()).append("] ");
+            sb.append("Usuário: ").append(user).append(" - ").append(message);
+            System.out.println(sb.toString());
+        }
     }
 }

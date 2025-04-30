@@ -1,6 +1,6 @@
 package com.databrick.service;
 
-import com.databrick.db.ConnectionBD;
+import com.databrick.config.ConnectionBD;
 import com.databrick.entity.Property;
 import com.databrick.entity.Security;
 import com.databrick.utils.LoggingUtility;
@@ -13,7 +13,7 @@ import java.util.List;
 
 public class JDBCService {
 
-    private final LoggingUtility log = new LoggingUtility();
+    private final LoggingUtility log = new LoggingUtility(JDBCService.class.getName());
     private final ConnectionBD connection = new ConnectionBD();
     private final JdbcTemplate template = new JdbcTemplate(connection.getConexao());
 
@@ -71,7 +71,6 @@ public class JDBCService {
 
     public void saveSecurity(Security security) throws Exception {
         try {
-
             if (getPD(security.getRegion()).size() > 0) {
                 String sqlScript = "INSERT INTO seguranca (id_regiao, nome_regiao, delegacia, " +
                         "furtos_regiao, roubos_cargas, roubos, " +
@@ -129,5 +128,21 @@ public class JDBCService {
         }
 
         log.registerLog(Level.INFO, "Dados de segurança salvos no banco com sucesso");
+    }
+
+    public void saveLog(List<String> values) {
+        String sqlScript = "INSERT INTO tb_logs (data_hora, tipo_processo, status, mensagem, usuario) VALUES (?, ?, ?, ?, ?)";
+
+        template.update(connection -> {
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
+            preparedStatement.setString(1, values.get(1));
+            preparedStatement.setString(2, values.get(2));
+            preparedStatement.setString(3, values.get(3));
+            preparedStatement.setString(4, values.get(4));
+            preparedStatement.setString(5, values.get(5));
+            return preparedStatement;
+        });
+
+        System.out.println("Log salvo com sucesso!");
     }
 }

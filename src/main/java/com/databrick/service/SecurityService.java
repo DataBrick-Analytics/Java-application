@@ -14,7 +14,7 @@ import java.util.List;
 
 public class SecurityService {
 
-    private final LoggingUtility log = new LoggingUtility();
+    private final LoggingUtility log = new LoggingUtility(SecurityService.class.getName());
 
     public void processDataSecurity(List<InputStream> bucketObjects) {
         log.registerLog(Level.INFO,"Iniciando o processamento de dados de segurança");

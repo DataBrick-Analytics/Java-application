@@ -12,9 +12,9 @@ import java.util.Properties;
 
 public class Main {
 
-    private static final LoggingUtility log = new LoggingUtility();
-    private static PropertyService propertyService;
-    private static SecurityService securityService;
+    private static final LoggingUtility log = new LoggingUtility(Main.class.getName());
+    private static final PropertyService propertyService = new PropertyService();
+    private static final SecurityService securityService = new SecurityService();
     private static Properties properties;
     private static S3Service bucketService = new S3Service(properties.getProperty("bucket.name"));
 
