@@ -1,19 +1,20 @@
-package com.databrick.db;
+package com.databrick.config;
 
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
-import java.sql.DriverManager;
+import java.util.Properties;
 
 public class ConnectionBD {
+
     private DataSource conexao;
+    private Properties properties;
 
     public ConnectionBD() {
         DriverManagerDataSource driver = new DriverManagerDataSource();
-        driver.setUsername("");
-        driver.setPassword("");
-        driver.setUrl("jdbc:mysql://localhost:3306/seu_banco");
-        driver.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        driver.setUsername(properties.getProperty("database.username"));
+        driver.setPassword(properties.getProperty("database.password"));
+        driver.setUrl(properties.getProperty("database.url"));
 
         this.conexao = driver;
     }
