@@ -2,6 +2,7 @@ package com.databrick.entity;
 
 public class Security {
 
+    private Integer id;
     private String policeStation;
     private Integer theftsByRegion;
     private Integer cargoRobbery;
@@ -26,6 +27,14 @@ public class Security {
         this.unintentionalHomicideTraffic = Integer.valueOf(unintentionalHomicideTraffic);
         this.unintentionalHomicide = Integer.valueOf(unintentionalHomicide);
         this.region = region;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getPoliceStation() {
@@ -114,13 +123,5 @@ public class Security {
 
     public void setRegion(String region) {
         this.region = region;
-    }
-
-    public Integer getRegionId() {
-        return regionId;
-    }
-
-    public void setRegionId(Integer regionId) {
-        this.regionId = regionId;
     }
 }

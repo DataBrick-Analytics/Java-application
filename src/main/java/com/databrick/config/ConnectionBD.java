@@ -8,7 +8,7 @@ import java.util.Properties;
 public class ConnectionBD {
 
     private DataSource conexao;
-    private Properties properties;
+    private Properties properties = new Properties();
 
     public ConnectionBD() {
         DriverManagerDataSource driver = new DriverManagerDataSource();

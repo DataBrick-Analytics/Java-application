@@ -4,15 +4,18 @@ import software.amazon.awssdk.auth.credentials.AwsSessionCredentials;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 
+import java.util.Properties;
+
 public class S3Provider {
 
     private final AwsSessionCredentials credentials;
+    private Properties properties = new Properties();
 
     public S3Provider() {
         this.credentials = AwsSessionCredentials.create(
-                System.getenv("AWS_ACCESS_KEY_ID"),
-                System.getenv("AWS_SECRET_ACCESS_KEY"),
-                System.getenv("AWS_SESSION_TOKEN")
+                properties.getProperty("bucket.access.key"),
+                properties.getProperty("bucket.secret.access.key"),
+                properties.getProperty("bucket.session.token")
         );
     }
 
