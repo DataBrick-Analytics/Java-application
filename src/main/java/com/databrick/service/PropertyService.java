@@ -18,7 +18,7 @@ public class PropertyService {
 
     private final LoggingUtility log = new LoggingUtility(PropertyService.class.getName());
 
-    public void processDataProperty(List<InputStream> bucketObjects) {
+    public void extractionPropertyData(List<InputStream> bucketObjects) {
         log.registerLog(Level.INFO,"Iniciando o processamento de dados de propriedades");
         try {
             for (InputStream bucketObject : bucketObjects) {
