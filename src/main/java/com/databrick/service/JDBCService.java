@@ -11,11 +11,15 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.sql.PreparedStatement;
 import java.util.List;
 
-public class JDBCService {
+public class JDBCService implements LoggingUtility.LogSaver {
 
-    private final LoggingUtility log = new LoggingUtility(JDBCService.class.getName());
+    private final LoggingUtility log;
     private final ConnectionBD connection = new ConnectionBD();
     private final JdbcTemplate template = new JdbcTemplate(connection.getConexao());
+
+    public JDBCService() {
+        this.log = new LoggingUtility(JDBCService.class.getName(), this);
+    }
 
     public List<Security> getPD(String district) {
         String sqlScript = "SELECT * FROM seguranca WHERE nome_regiao LIKE '%(?)%';";
@@ -56,7 +60,7 @@ public class JDBCService {
                 preparedStatement.setObject(20, property.getValue().getTransactionValueDeclared());
 
                 Integer fkRegiao = null;
-                if (property.getAddress().getDistrict() != null) fkRegiao = getPD(property.getAddress().getDistrict()).getFirst().getRegionId();
+                if (property.getAddress().getDistrict() != null) fkRegiao = getPD(property.getAddress().getDistrict()).getFirst().getId();
                 preparedStatement.setInt(21, fkRegiao);
 
                 return preparedStatement;
@@ -130,6 +134,7 @@ public class JDBCService {
         log.registerLog(Level.INFO, "Dados de segurança salvos no banco com sucesso");
     }
 
+    @Override
     public void saveLog(List<String> values) {
         String sqlScript = "INSERT INTO tb_logs (data_hora, tipo_processo, status, mensagem, usuario) VALUES (?, ?, ?, ?, ?)";
 
