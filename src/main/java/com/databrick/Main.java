@@ -18,7 +18,7 @@ public class Main {
     private static final LoggingUtility log = new LoggingUtility(Main.class.getName());
     private static final PropertyService propertyService = new PropertyService();
     private static final SecurityService securityService = new SecurityService();
-    private static S3Service bucketService = new S3Service(AppConfig.get("bucket.name"));
+    private static final S3Service bucketService = new S3Service(AppConfig.get("bucket.name"));
 
     public static void main(String[] args) {
         log.registerLog(Level.INFO, "Aplicação iniciada");

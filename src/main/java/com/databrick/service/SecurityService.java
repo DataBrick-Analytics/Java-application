@@ -18,7 +18,7 @@ public class SecurityService {
     private final LoggingUtility log = new LoggingUtility(SecurityService.class.getName());
     private final JDBCService jdbcService = new JDBCService();
 
-    public void extractionSecurityData(List<InputStream> bucketObjects) {
+    public void extractionSecurityData(List<InputStream> bucketObjects) throws Exception {
         log.registerLog(Level.INFO,"Iniciando o processamento de dados de segurança");
         try {
             for (InputStream bucketObject : bucketObjects) {
@@ -53,6 +53,7 @@ public class SecurityService {
             }
         } catch (Exception e) {
             log.registerLog(Level.ERROR, "Erro ao tentar processar os dados. Message: " + e.getMessage());
+            throw new Exception(e);
         }
     }
 }

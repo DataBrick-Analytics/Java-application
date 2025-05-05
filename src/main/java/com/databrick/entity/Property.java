@@ -12,6 +12,9 @@ public class Property {
     private String cityIBGE;
     private String ddd;
 
+    public Property() {
+    }
+
     public Property(Value value, String registryOffice, String propertyRegistration, String sqlStatus, String landAream2, String builtAream2, Address address, String cityIBGE, String ddd) {
         this.value = value;
         this.registryOffice = registryOffice;

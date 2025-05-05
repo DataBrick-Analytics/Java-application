@@ -14,6 +14,9 @@ public class Security {
     private Integer unintentionalHomicideTraffic;
     private Integer unintentionalHomicide;
 
+    public Security() {
+    }
+
     public Security(String policeStation, String theftsByRegion, String cargoRobbery, String robberies, String vehicleRobbery, String vehicleTheft, String violentThefts, String intentionalHomicideTraffic, String unintentionalHomicideTraffic, String unintentionalHomicide) {
         this.policeStation = policeStation;
         this.theftsByRegion = parseInteger(theftsByRegion);

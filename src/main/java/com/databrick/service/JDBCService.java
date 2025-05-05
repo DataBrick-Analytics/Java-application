@@ -60,7 +60,8 @@ public class JDBCService implements LoggingUtility.LogSaver {
                 preparedStatement.setDouble(20, property.getValue().getTransactionValueDeclared());
 
                 Integer fkRegiao = null;
-                if (property.getAddress().getDistrict() != null) fkRegiao = getPD(property.getAddress().getDistrict()).getFirst().getId();
+                if (property.getAddress().getDistrict() != null)
+                    fkRegiao = getPD(property.getAddress().getDistrict()).getFirst().getId();
                 preparedStatement.setInt(21, fkRegiao);
 
                 return preparedStatement;
@@ -75,7 +76,7 @@ public class JDBCService implements LoggingUtility.LogSaver {
     public void saveSecurity(Security security) {
         System.out.println("Ta começando a salvar ein");
         try {
-            if (getPD(security.getPoliceStation()) != null) {
+            if (getPD(security.getPoliceStation()).isEmpty()) {
                 System.out.println("verificou que nao existe ainda");
                 String sqlScript = "INSERT INTO seguranca (id_regiao, delegacia, " +
                         "furtos_regiao, roubos_cargas, roubos, " +
@@ -137,7 +138,7 @@ public class JDBCService implements LoggingUtility.LogSaver {
 
     @Override
     public void saveLog(List<String> values) {
-        String sqlScript = "INSERT INTO logs (data_hora, tipo_processo, status, mensagem, usuario) VALUES (?, ?, ?, ?, ?)";
+        String sqlScript = "INSERT INTO logs (data_hora, tipo_processo, status, mensagem, usuarios) VALUES (?, ?, ?, ?, ?)";
 
         template.update(connection -> {
             PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
