@@ -3,18 +3,17 @@ package com.databrick.config;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
-import java.util.Properties;
 
 public class ConnectionBD {
 
     private DataSource conexao;
-    private Properties properties = new Properties();
 
     public ConnectionBD() {
         DriverManagerDataSource driver = new DriverManagerDataSource();
-        driver.setUsername(properties.getProperty("database.username"));
-        driver.setPassword(properties.getProperty("database.password"));
-        driver.setUrl(properties.getProperty("database.url"));
+        driver.setDriverClassName(AppConfig.get("database.driver.class.name"));
+        driver.setUsername(AppConfig.get("database.username"));
+        driver.setPassword(AppConfig.get("database.password"));
+        driver.setUrl(AppConfig.get("database.url"));
 
         this.conexao = driver;
     }

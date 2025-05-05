@@ -5,6 +5,7 @@ import com.databrick.entity.Property;
 import com.databrick.entity.Value;
 import com.databrick.utils.LoggingUtility;
 import org.apache.logging.log4j.Level;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -17,6 +18,7 @@ import java.util.List;
 public class PropertyService {
 
     private final LoggingUtility log = new LoggingUtility(PropertyService.class.getName());
+    private final JDBCService jdbcService = new JDBCService();
 
     public void extractionPropertyData(List<InputStream> bucketObjects) {
         log.registerLog(Level.INFO,"Iniciando o processamento de dados de propriedades");
@@ -26,23 +28,19 @@ public class PropertyService {
                 Sheet sheet = workbook.getSheetAt(0);
                 log.registerLog(Level.INFO, "A planilha foi acessada com sucesso");
 
+                DataFormatter formatter = new DataFormatter();
+
                 for (int i = 0; i < sheet.getPhysicalNumberOfRows(); i++) {
                     Row row = sheet.getRow(i);
-                    List<String> cellValues = new ArrayList<>(); // Lista onde receberemos os valores das células
-                    row.forEach(cell ->
-                            cellValues.add(cell.getStringCellValue()) // adiciona o valor da célula na lista
-                    );
 
-                    Boolean lineHasEmptyCell = false;
-                    for (String value : cellValues) {
-                        if (value == null) {
-                            log.registerLog(Level.WARN, "Célula vazia encontrada na linha " + (i + 1));
-                            lineHasEmptyCell = true;
-                            break;
-                        }
-                    }
+                    List<String> cellValues = new ArrayList<>();
+                    row.forEach(cell -> {
+                        String value = formatter.formatCellValue(cell);
+                        cellValues.add(value.isEmpty() ? null : value);
+                    });
 
-                    if (lineHasEmptyCell) {
+                    if (cellValues.contains(null)) {
+                        log.registerLog(Level.WARN, "Célula vazia encontrada na linha " + (i + 1));
                         continue;
                     }
 
@@ -57,7 +55,7 @@ public class PropertyService {
                             cellValues.get(6), cellValues.get(7), cellValues.get(8),
                             propertyAddress, cellValues.get(20), cellValues.get(21));
 
-                    // TODO inserção dos dados no banco
+                    jdbcService.saveProperty(property);
                 }
             }
         } catch (Exception e) {

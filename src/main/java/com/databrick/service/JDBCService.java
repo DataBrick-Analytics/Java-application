@@ -22,20 +22,20 @@ public class JDBCService implements LoggingUtility.LogSaver {
     }
 
     public List<Security> getPD(String district) {
-        String sqlScript = "SELECT * FROM seguranca WHERE nome_regiao LIKE '%(?)%';";
+        String sqlScript = "SELECT * FROM seguranca WHERE delegacia LIKE ?";
 
-        return template.query(sqlScript, new BeanPropertyRowMapper<>(Security.class), district);
+        return template.query(sqlScript, new BeanPropertyRowMapper<>(Security.class), "%" + district + "%");
     }
 
-    public void saveProperty(Property property) throws Exception {
+    public void saveProperty(Property property) {
         try {
             String sqlScript = "INSERT INTO propriedades (id_imovel, cep, nome_endereco, tipo_endereco, " +
                     "endereco_completo, estado, bairro, zona, latitude, longitude, cidade, " +
                     "codigo_ibge_cidade, ddd, descricao_uso_iptu, area_terreno_m2, " +
                     "area_construida_m2, registro_propriedade, cartorio_registro, " +
                     "valor_mercado_divulgado, valor_proporcional_mercado, " +
-                    "valor_transacao_declarado, sql_status, fk_regiao) " +
-                    "VALUES (default, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "valor_transacao_declarado, fk_regiao) " +
+                    "VALUES (default, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             template.update(connection -> {
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
@@ -49,15 +49,15 @@ public class JDBCService implements LoggingUtility.LogSaver {
                 preparedStatement.setString(9, property.getAddress().getLatitude());
                 preparedStatement.setString(10, property.getAddress().getLongitude());
                 preparedStatement.setString(11, property.getAddress().getCity());
-                preparedStatement.setObject(12, property.getCityIBGE());
+                preparedStatement.setString(12, property.getCityIBGE());
                 preparedStatement.setString(13, property.getDdd());
-                preparedStatement.setObject(14, property.getLandAream2());
-                preparedStatement.setObject(15, property.getBuiltAream2());
+                preparedStatement.setDouble(14, property.getLandAream2());
+                preparedStatement.setDouble(15, property.getBuiltAream2());
                 preparedStatement.setString(16, property.getPropertyRegistration());
                 preparedStatement.setString(17, property.getRegistryOffice());
-                preparedStatement.setObject(18, property.getValue().getReferenceMarketValue());
-                preparedStatement.setObject(19, property.getValue().getProportionalReferenceMarketValue());
-                preparedStatement.setObject(20, property.getValue().getTransactionValueDeclared());
+                preparedStatement.setDouble(18, property.getValue().getReferenceMarketValue());
+                preparedStatement.setDouble(19, property.getValue().getProportionalReferenceMarketValue());
+                preparedStatement.setDouble(20, property.getValue().getTransactionValueDeclared());
 
                 Integer fkRegiao = null;
                 if (property.getAddress().getDistrict() != null) fkRegiao = getPD(property.getAddress().getDistrict()).getFirst().getId();
@@ -67,37 +67,39 @@ public class JDBCService implements LoggingUtility.LogSaver {
             });
         } catch (Exception e) {
             log.registerLog(Level.ERROR, "Parece que ocorreu um erro ao tentar salvar os dados. Message: " + e.getMessage());
-            throw new Exception(e);
         }
 
         log.registerLog(Level.INFO, "Dados de propriedades salvos no banco com sucesso");
     }
 
-    public void saveSecurity(Security security) throws Exception {
+    public void saveSecurity(Security security) {
+        System.out.println("Ta começando a salvar ein");
         try {
-            if (getPD(security.getRegion()).size() > 0) {
-                String sqlScript = "INSERT INTO seguranca (id_regiao, nome_regiao, delegacia, " +
+            if (getPD(security.getPoliceStation()) != null) {
+                System.out.println("verificou que nao existe ainda");
+                String sqlScript = "INSERT INTO seguranca (id_regiao, delegacia, " +
                         "furtos_regiao, roubos_cargas, roubos, " +
                         "roubos_veiculos, furtos_veiculos, latrocinios, " +
                         "homicidio_doloso_acidente_transito, homicidio_culposo_acidente_transito, homicidio_culposo) " +
-                        "VALUES (default, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        "VALUES (default, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
                 template.update(connection -> {
                     PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
-                    preparedStatement.setString(2, security.getRegion());
-                    preparedStatement.setString(3, security.getPoliceStation());
-                    preparedStatement.setInt(4, security.getTheftsByRegion());
-                    preparedStatement.setInt(5, security.getCargoRobbery());
-                    preparedStatement.setInt(6, security.getRobberies());
-                    preparedStatement.setInt(7, security.getVehicleRobbery());
-                    preparedStatement.setInt(8, security.getVehicleTheft());
-                    preparedStatement.setInt(9, security.getViolentThefts());
-                    preparedStatement.setInt(10, security.getIntentionalHomicideTraffic());
-                    preparedStatement.setInt(11, security.getUnintentionalHomicideTraffic());
-                    preparedStatement.setInt(12,security.getUnintentionalHomicide());
+                    preparedStatement.setString(1, security.getPoliceStation());
+                    preparedStatement.setInt(2, security.getTheftsByRegion());
+                    preparedStatement.setInt(3, security.getCargoRobbery());
+                    preparedStatement.setInt(4, security.getRobberies());
+                    preparedStatement.setInt(5, security.getVehicleRobbery());
+                    preparedStatement.setInt(6, security.getVehicleTheft());
+                    preparedStatement.setInt(7, security.getViolentThefts());
+                    preparedStatement.setInt(8, security.getIntentionalHomicideTraffic());
+                    preparedStatement.setInt(9, security.getUnintentionalHomicideTraffic());
+                    preparedStatement.setInt(10, security.getUnintentionalHomicide());
                     return preparedStatement;
                 });
+                System.out.println("salvou");
             } else {
+                System.out.println("ja existe ein");
                 String sqlScript = "UPDATE seguranca SET " +
                         "furtos_regiao = furtos_regiao + ?, " +
                         "roubos_cargas = roubos_cargas + ?, " +
@@ -108,7 +110,7 @@ public class JDBCService implements LoggingUtility.LogSaver {
                         "homicidio_doloso_acidente_transito = homicidio_doloso_acidente_transito + ?, " +
                         "homicidio_culposo_acidente_transito = homicidio_culposo_acidente_transito + ?, " +
                         "homicidio_culposo = homicidio_culposo + ? " +
-                        "WHERE nome_regiao = ? AND delegacia = ?";
+                        "WHERE delegacia = ?";
 
                 template.update(connection -> {
                     PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
@@ -121,14 +123,13 @@ public class JDBCService implements LoggingUtility.LogSaver {
                     preparedStatement.setInt(7, security.getIntentionalHomicideTraffic());
                     preparedStatement.setInt(8, security.getUnintentionalHomicideTraffic());
                     preparedStatement.setInt(9, security.getUnintentionalHomicide());
-                    preparedStatement.setString(10, security.getRegion());
-                    preparedStatement.setString(11, security.getPoliceStation());
+                    preparedStatement.setString(10, security.getPoliceStation());
                     return preparedStatement;
                 });
+                System.out.println("atualizou");
             }
         } catch (Exception e) {
             log.registerLog(Level.ERROR, "Parece que ocorreu um erro ao tentar salvar os dados. Message: " + e.getMessage());
-            throw new Exception(e);
         }
 
         log.registerLog(Level.INFO, "Dados de segurança salvos no banco com sucesso");
@@ -136,15 +137,15 @@ public class JDBCService implements LoggingUtility.LogSaver {
 
     @Override
     public void saveLog(List<String> values) {
-        String sqlScript = "INSERT INTO tb_logs (data_hora, tipo_processo, status, mensagem, usuario) VALUES (?, ?, ?, ?, ?)";
+        String sqlScript = "INSERT INTO logs (data_hora, tipo_processo, status, mensagem, usuario) VALUES (?, ?, ?, ?, ?)";
 
         template.update(connection -> {
             PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
-            preparedStatement.setString(1, values.get(1));
-            preparedStatement.setString(2, values.get(2));
-            preparedStatement.setString(3, values.get(3));
-            preparedStatement.setString(4, values.get(4));
-            preparedStatement.setString(5, values.get(5));
+            preparedStatement.setString(1, values.get(0));
+            preparedStatement.setString(2, values.get(1));
+            preparedStatement.setString(3, values.get(2));
+            preparedStatement.setString(4, values.get(3));
+            preparedStatement.setString(5, values.get(4));
             return preparedStatement;
         });
 

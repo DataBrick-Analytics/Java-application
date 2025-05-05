@@ -13,20 +13,18 @@ public class Security {
     private Integer intentionalHomicideTraffic;
     private Integer unintentionalHomicideTraffic;
     private Integer unintentionalHomicide;
-    private String region;
 
-    public Security(String policeStation, String theftsByRegion, String cargoRobbery, String robberies, String vehicleRobbery, String vehicleTheft, String violentThefts, String intentionalHomicideTraffic, String unintentionalHomicideTraffic, String unintentionalHomicide, String region, String regionId) {
+    public Security(String policeStation, String theftsByRegion, String cargoRobbery, String robberies, String vehicleRobbery, String vehicleTheft, String violentThefts, String intentionalHomicideTraffic, String unintentionalHomicideTraffic, String unintentionalHomicide) {
         this.policeStation = policeStation;
-        this.theftsByRegion = Integer.valueOf(theftsByRegion);
-        this.cargoRobbery = Integer.valueOf(cargoRobbery);
-        this.robberies = Integer.valueOf(robberies);
-        this.vehicleRobbery = Integer.valueOf(vehicleRobbery);
-        this.vehicleTheft = Integer.valueOf(vehicleTheft);
-        this.violentThefts = Integer.valueOf(violentThefts);
-        this.intentionalHomicideTraffic = Integer.valueOf(intentionalHomicideTraffic);
-        this.unintentionalHomicideTraffic = Integer.valueOf(unintentionalHomicideTraffic);
-        this.unintentionalHomicide = Integer.valueOf(unintentionalHomicide);
-        this.region = region;
+        this.theftsByRegion = parseInteger(theftsByRegion);
+        this.cargoRobbery = parseInteger(cargoRobbery);
+        this.robberies = parseInteger(robberies);
+        this.vehicleRobbery = parseInteger(vehicleRobbery);
+        this.vehicleTheft = parseInteger(vehicleTheft);
+        this.violentThefts = parseInteger(violentThefts);
+        this.intentionalHomicideTraffic = parseInteger(intentionalHomicideTraffic);
+        this.unintentionalHomicideTraffic = parseInteger(unintentionalHomicideTraffic);
+        this.unintentionalHomicide = parseInteger(unintentionalHomicide);
     }
 
     public Integer getId() {
@@ -117,11 +115,13 @@ public class Security {
         this.unintentionalHomicide = unintentionalHomicide;
     }
 
-    public String getRegion() {
-        return region;
+    private Integer parseInteger(String value) {
+        if (value == null || value.isBlank()) return null;
+        try {
+            return Integer.valueOf(value.replace(",", ""));
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
-    public void setRegion(String region) {
-        this.region = region;
-    }
 }
