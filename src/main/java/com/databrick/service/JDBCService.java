@@ -74,7 +74,6 @@ public class JDBCService implements LoggingUtility.LogSaver {
     }
 
     public void saveSecurity(Security security) {
-        System.out.println("Ta começando a salvar ein");
         try {
             if (getPD(security.getPoliceStation()).isEmpty()) {
                 System.out.println("verificou que nao existe ainda");
