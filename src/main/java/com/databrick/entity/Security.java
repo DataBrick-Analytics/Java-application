@@ -13,11 +13,12 @@ public class Security {
     private Integer intentionalHomicideTraffic;
     private Integer unintentionalHomicideTraffic;
     private Integer unintentionalHomicide;
+    private Integer lastYearCollected;
 
     public Security() {
     }
 
-    public Security(String policeStation, String theftsByRegion, String cargoRobbery, String robberies, String vehicleRobbery, String vehicleTheft, String violentThefts, String intentionalHomicideTraffic, String unintentionalHomicideTraffic, String unintentionalHomicide) {
+    public Security(String policeStation, String theftsByRegion, String cargoRobbery, String robberies, String vehicleRobbery, String vehicleTheft, String violentThefts, String intentionalHomicideTraffic, String unintentionalHomicideTraffic, String unintentionalHomicide, String lastYearCollected) {
         this.policeStation = policeStation;
         this.theftsByRegion = parseInteger(theftsByRegion);
         this.cargoRobbery = parseInteger(cargoRobbery);
@@ -28,6 +29,7 @@ public class Security {
         this.intentionalHomicideTraffic = parseInteger(intentionalHomicideTraffic);
         this.unintentionalHomicideTraffic = parseInteger(unintentionalHomicideTraffic);
         this.unintentionalHomicide = parseInteger(unintentionalHomicide);
+        this.lastYearCollected = parseInteger(lastYearCollected);
     }
 
     public Integer getId() {
@@ -116,6 +118,14 @@ public class Security {
 
     public void setUnintentionalHomicide(Integer unintentionalHomicide) {
         this.unintentionalHomicide = unintentionalHomicide;
+    }
+
+    public Integer getLastYearCollected() {
+        return lastYearCollected;
+    }
+
+    public void setLastYearCollected(Integer lastYearCollected) {
+        this.lastYearCollected = lastYearCollected;
     }
 
     private Integer parseInteger(String value) {

@@ -21,10 +21,10 @@ public class JDBCService implements LoggingUtility.LogSaver {
         this.log = new LoggingUtility(JDBCService.class.getName(), this);
     }
 
-    public List<Security> getPD(String district) {
+    public Security getPD(String district) {
         String sqlScript = "SELECT * FROM seguranca WHERE delegacia LIKE ?";
 
-        return template.query(sqlScript, new BeanPropertyRowMapper<>(Security.class), "%" + district + "%");
+        return template.queryForObject(sqlScript, new BeanPropertyRowMapper<>(Security.class), "%" + district + "%");
     }
 
     public void saveProperty(Property property) {
@@ -61,7 +61,7 @@ public class JDBCService implements LoggingUtility.LogSaver {
 
                 Integer fkRegiao = null;
                 if (property.getAddress().getDistrict() != null)
-                    fkRegiao = getPD(property.getAddress().getDistrict()).getFirst().getId();
+                    fkRegiao = getPD(property.getAddress().getDistrict()).getId();
                 preparedStatement.setInt(21, fkRegiao);
 
                 return preparedStatement;
@@ -75,12 +75,12 @@ public class JDBCService implements LoggingUtility.LogSaver {
 
     public void saveSecurity(Security security) {
         try {
-            if (getPD(security.getPoliceStation()).isEmpty()) {
-                System.out.println("verificou que nao existe ainda");
+            Security PDDatabase = getPD(security.getPoliceStation());
+            if (PDDatabase == null) {
                 String sqlScript = "INSERT INTO seguranca (id_regiao, delegacia, " +
                         "furtos_regiao, roubos_cargas, roubos, " +
                         "roubos_veiculos, furtos_veiculos, latrocinios, " +
-                        "homicidio_doloso_acidente_transito, homicidio_culposo_acidente_transito, homicidio_culposo) " +
+                        "homicidio_doloso_acidente_transito, homicidio_culposo_acidente_transito, homicidio_culposo, dt_ultima_coleta) " +
                         "VALUES (default, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
                 template.update(connection -> {
@@ -97,9 +97,8 @@ public class JDBCService implements LoggingUtility.LogSaver {
                     preparedStatement.setInt(10, security.getUnintentionalHomicide());
                     return preparedStatement;
                 });
-                System.out.println("salvou");
-            } else {
-                System.out.println("ja existe ein");
+            } else if (PDDatabase.getLastYearCollected() < security.getLastYearCollected()) {
+
                 String sqlScript = "UPDATE seguranca SET " +
                         "furtos_regiao = furtos_regiao + ?, " +
                         "roubos_cargas = roubos_cargas + ?, " +
@@ -110,6 +109,7 @@ public class JDBCService implements LoggingUtility.LogSaver {
                         "homicidio_doloso_acidente_transito = homicidio_doloso_acidente_transito + ?, " +
                         "homicidio_culposo_acidente_transito = homicidio_culposo_acidente_transito + ?, " +
                         "homicidio_culposo = homicidio_culposo + ? " +
+                        "dt_ultima_coleta = ?" +
                         "WHERE delegacia = ?";
 
                 template.update(connection -> {
@@ -123,10 +123,10 @@ public class JDBCService implements LoggingUtility.LogSaver {
                     preparedStatement.setInt(7, security.getIntentionalHomicideTraffic());
                     preparedStatement.setInt(8, security.getUnintentionalHomicideTraffic());
                     preparedStatement.setInt(9, security.getUnintentionalHomicide());
-                    preparedStatement.setString(10, security.getPoliceStation());
+                    preparedStatement.setInt(10, security.getLastYearCollected());
+                    preparedStatement.setString(11, security.getPoliceStation());
                     return preparedStatement;
                 });
-                System.out.println("atualizou");
             }
         } catch (Exception e) {
             log.registerLog(Level.ERROR, "Parece que ocorreu um erro ao tentar salvar os dados. Message: " + e.getMessage());
