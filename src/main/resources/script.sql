@@ -44,7 +44,8 @@ CREATE TABLE IF NOT EXISTS `seguranca` (
   `latrocinios` INT,
   `homicidio_doloso_acidente_transito` INT,
   `homicidio_culposo_acidente_transito` INT,
-  `homicidio_culposo` INT
+  `homicidio_culposo` INT,
+  `dt_ultima_coleta` YEAR
 );
 
 -- Tabela: propriedades

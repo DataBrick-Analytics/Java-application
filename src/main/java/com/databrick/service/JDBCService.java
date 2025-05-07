@@ -22,10 +22,16 @@ public class JDBCService implements LoggingUtility.LogSaver {
     }
 
     public Security getPD(String district) {
-        String sqlScript = "SELECT * FROM seguranca WHERE delegacia LIKE ?";
+        String sqlScript = "SELECT delegacia AS policeStation, furtos_regiao AS theftsByRegion, roubos_cargas AS cargoRobbery, " +
+                "roubos AS robberies, roubos_veiculos AS vehicleRobbery, furtos_veiculos AS vehicleTheft, " +
+                "latrocinios AS violentThefts, homicidio_doloso_acidente_transito AS intentionalHomicideTraffic, " +
+                "homicidio_culposo_acidente_transito AS unintentionalHomicideTraffic, homicidio_culposo AS unintentionalHomicide, " +
+                "dt_ultima_coleta AS lastYearCollected FROM seguranca WHERE delegacia LIKE ?";
 
-        return template.queryForObject(sqlScript, new BeanPropertyRowMapper<>(Security.class), "%" + district + "%");
+        List<Security> results = template.query(sqlScript, new BeanPropertyRowMapper<>(Security.class), "%" + district + "%");
+        return results.isEmpty() ? null : results.getFirst();
     }
+
 
     public void saveProperty(Property property) {
         try {
@@ -39,25 +45,25 @@ public class JDBCService implements LoggingUtility.LogSaver {
 
             template.update(connection -> {
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
-                preparedStatement.setString(2, property.getAddress().getCep());
-                preparedStatement.setString(3, property.getAddress().getAddressName());
-                preparedStatement.setString(4, property.getAddress().getAddressType());
-                preparedStatement.setString(5, property.getAddress().getFullAddress());
-                preparedStatement.setString(6, property.getAddress().getState());
-                preparedStatement.setString(7, property.getAddress().getDistrict());
-                preparedStatement.setString(8, property.getAddress().getZone());
-                preparedStatement.setString(9, property.getAddress().getLatitude());
-                preparedStatement.setString(10, property.getAddress().getLongitude());
-                preparedStatement.setString(11, property.getAddress().getCity());
-                preparedStatement.setString(12, property.getCityIBGE());
-                preparedStatement.setString(13, property.getDdd());
-                preparedStatement.setDouble(14, property.getLandAream2());
-                preparedStatement.setDouble(15, property.getBuiltAream2());
-                preparedStatement.setString(16, property.getPropertyRegistration());
-                preparedStatement.setString(17, property.getRegistryOffice());
-                preparedStatement.setDouble(18, property.getValue().getReferenceMarketValue());
-                preparedStatement.setDouble(19, property.getValue().getProportionalReferenceMarketValue());
-                preparedStatement.setDouble(20, property.getValue().getTransactionValueDeclared());
+                preparedStatement.setObject(2, property.getAddress().getCep());
+                preparedStatement.setObject(3, property.getAddress().getAddressName());
+                preparedStatement.setObject(4, property.getAddress().getAddressType());
+                preparedStatement.setObject(5, property.getAddress().getFullAddress());
+                preparedStatement.setObject(6, property.getAddress().getState());
+                preparedStatement.setObject(7, property.getAddress().getDistrict());
+                preparedStatement.setObject(8, property.getAddress().getZone());
+                preparedStatement.setObject(9, property.getAddress().getLatitude());
+                preparedStatement.setObject(10, property.getAddress().getLongitude());
+                preparedStatement.setObject(11, property.getAddress().getCity());
+                preparedStatement.setObject(12, property.getCityIBGE());
+                preparedStatement.setObject(13, property.getDdd());
+                preparedStatement.setObject(14, property.getLandAream2());
+                preparedStatement.setObject(15, property.getBuiltAream2());
+                preparedStatement.setObject(16, property.getPropertyRegistration());
+                preparedStatement.setObject(17, property.getRegistryOffice());
+                preparedStatement.setObject(18, property.getValue().getReferenceMarketValue());
+                preparedStatement.setObject(19, property.getValue().getProportionalReferenceMarketValue());
+                preparedStatement.setObject(20, property.getValue().getTransactionValueDeclared());
 
                 Integer fkRegiao = null;
                 if (property.getAddress().getDistrict() != null)
@@ -73,66 +79,72 @@ public class JDBCService implements LoggingUtility.LogSaver {
         log.registerLog(Level.INFO, "Dados de propriedades salvos no banco com sucesso");
     }
 
-    public void saveSecurity(Security security) {
+    public void saveSecurity(Security security) throws Exception {
         try {
             Security PDDatabase = getPD(security.getPoliceStation());
+            Integer newYear = security.getLastYearCollected() != null ? security.getLastYearCollected() : 0;
             if (PDDatabase == null) {
                 String sqlScript = "INSERT INTO seguranca (id_regiao, delegacia, " +
                         "furtos_regiao, roubos_cargas, roubos, " +
                         "roubos_veiculos, furtos_veiculos, latrocinios, " +
                         "homicidio_doloso_acidente_transito, homicidio_culposo_acidente_transito, homicidio_culposo, dt_ultima_coleta) " +
-                        "VALUES (default, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        "VALUES (default, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
                 template.update(connection -> {
                     PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
-                    preparedStatement.setString(1, security.getPoliceStation());
-                    preparedStatement.setInt(2, security.getTheftsByRegion());
-                    preparedStatement.setInt(3, security.getCargoRobbery());
-                    preparedStatement.setInt(4, security.getRobberies());
-                    preparedStatement.setInt(5, security.getVehicleRobbery());
-                    preparedStatement.setInt(6, security.getVehicleTheft());
-                    preparedStatement.setInt(7, security.getViolentThefts());
-                    preparedStatement.setInt(8, security.getIntentionalHomicideTraffic());
-                    preparedStatement.setInt(9, security.getUnintentionalHomicideTraffic());
-                    preparedStatement.setInt(10, security.getUnintentionalHomicide());
+                    preparedStatement.setObject(1, security.getPoliceStation());
+                    preparedStatement.setObject(2, security.getTheftsByRegion());
+                    preparedStatement.setObject(3, security.getCargoRobbery());
+                    preparedStatement.setObject(4, security.getRobberies());
+                    preparedStatement.setObject(5, security.getVehicleRobbery());
+                    preparedStatement.setObject(6, security.getVehicleTheft());
+                    preparedStatement.setObject(7, security.getViolentThefts());
+                    preparedStatement.setObject(8, security.getIntentionalHomicideTraffic());
+                    preparedStatement.setObject(9, security.getUnintentionalHomicideTraffic());
+                    preparedStatement.setObject(10, security.getUnintentionalHomicide());
+                    preparedStatement.setObject(11, security.getLastYearCollected());
                     return preparedStatement;
                 });
-            } else if (PDDatabase.getLastYearCollected() < security.getLastYearCollected()) {
+            } else {
+                Integer existingYear = PDDatabase.getLastYearCollected() != null ? PDDatabase.getLastYearCollected() : 0;
 
-                String sqlScript = "UPDATE seguranca SET " +
-                        "furtos_regiao = furtos_regiao + ?, " +
-                        "roubos_cargas = roubos_cargas + ?, " +
-                        "roubos = roubos + ?, " +
-                        "roubos_veiculos = roubos_veiculos + ?, " +
-                        "furtos_veiculos = furtos_veiculos + ?, " +
-                        "latrocinios = latrocinios + ?, " +
-                        "homicidio_doloso_acidente_transito = homicidio_doloso_acidente_transito + ?, " +
-                        "homicidio_culposo_acidente_transito = homicidio_culposo_acidente_transito + ?, " +
-                        "homicidio_culposo = homicidio_culposo + ? " +
-                        "dt_ultima_coleta = ?" +
-                        "WHERE delegacia = ?";
+                if (existingYear < newYear) {
+                    String sqlScript = "UPDATE seguranca SET " +
+                            "furtos_regiao = furtos_regiao + ?, " +
+                            "roubos_cargas = roubos_cargas + ?, " +
+                            "roubos = roubos + ?, " +
+                            "roubos_veiculos = roubos_veiculos + ?, " +
+                            "furtos_veiculos = furtos_veiculos + ?, " +
+                            "latrocinios = latrocinios + ?, " +
+                            "homicidio_doloso_acidente_transito = homicidio_doloso_acidente_transito + ?, " +
+                            "homicidio_culposo_acidente_transito = homicidio_culposo_acidente_transito + ?, " +
+                            "homicidio_culposo = homicidio_culposo + ?, " +
+                            "dt_ultima_coleta = ? " +
+                            "WHERE delegacia = ?";
 
-                template.update(connection -> {
-                    PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
-                    preparedStatement.setInt(1, security.getTheftsByRegion());
-                    preparedStatement.setInt(2, security.getCargoRobbery());
-                    preparedStatement.setInt(3, security.getRobberies());
-                    preparedStatement.setInt(4, security.getVehicleRobbery());
-                    preparedStatement.setInt(5, security.getVehicleTheft());
-                    preparedStatement.setInt(6, security.getViolentThefts());
-                    preparedStatement.setInt(7, security.getIntentionalHomicideTraffic());
-                    preparedStatement.setInt(8, security.getUnintentionalHomicideTraffic());
-                    preparedStatement.setInt(9, security.getUnintentionalHomicide());
-                    preparedStatement.setInt(10, security.getLastYearCollected());
-                    preparedStatement.setString(11, security.getPoliceStation());
-                    return preparedStatement;
-                });
+                    template.update(connection -> {
+                        PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
+                        preparedStatement.setObject(1, security.getTheftsByRegion());
+                        preparedStatement.setObject(2, security.getCargoRobbery());
+                        preparedStatement.setObject(3, security.getRobberies());
+                        preparedStatement.setObject(4, security.getVehicleRobbery());
+                        preparedStatement.setObject(5, security.getVehicleTheft());
+                        preparedStatement.setObject(6, security.getViolentThefts());
+                        preparedStatement.setObject(7, security.getIntentionalHomicideTraffic());
+                        preparedStatement.setObject(8, security.getUnintentionalHomicideTraffic());
+                        preparedStatement.setObject(9, security.getUnintentionalHomicide());
+                        preparedStatement.setObject(10, security.getLastYearCollected());
+                        preparedStatement.setObject(11, security.getPoliceStation());
+                        return preparedStatement;
+                    });
+                } else {
+                    log.registerLog(Level.WARN, "O dado já esta registrado no banco e o mais recente possível!");
+                }
             }
         } catch (Exception e) {
             log.registerLog(Level.ERROR, "Parece que ocorreu um erro ao tentar salvar os dados. Message: " + e.getMessage());
+            // TODO remover log de salvo com sucesso caso alguem de erro
         }
-
-        log.registerLog(Level.INFO, "Dados de segurança salvos no banco com sucesso");
     }
 
     @Override

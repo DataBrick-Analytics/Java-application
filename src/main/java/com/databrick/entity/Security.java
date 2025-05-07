@@ -131,7 +131,7 @@ public class Security {
     private Integer parseInteger(String value) {
         if (value == null || value.isBlank()) return null;
         try {
-            return Integer.valueOf(value.replace(",", ""));
+            return Integer.valueOf(value.replace(",", "").replace(".", ""));
         } catch (NumberFormatException e) {
             return null;
         }
