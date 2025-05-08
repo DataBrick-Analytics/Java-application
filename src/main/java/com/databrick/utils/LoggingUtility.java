@@ -30,7 +30,7 @@ public class LoggingUtility {
         List<String> values = new ArrayList<>();
 
         if (level != null && message != null) {
-            String dateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+            String dateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             String user = "System";
 
             values.add(dateTime);

@@ -5,5 +5,6 @@ public enum zoneEnum {
     NORTE,
     SUL,
     LESTE,
-    OESTE
+    OESTE,
+    CENTRO
 }
