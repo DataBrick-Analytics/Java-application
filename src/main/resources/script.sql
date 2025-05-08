@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
 
 -- Tabela: seguranca
 CREATE TABLE IF NOT EXISTS `seguranca` (
-  `id_regiao` INT PRIMARY KEY AUTO_INCREMENT,
+  `id_delegacia` INT PRIMARY KEY AUTO_INCREMENT,
   `delegacia` VARCHAR(100),
   `furtos_regiao` INT,
   `roubos_cargas` INT,
@@ -51,6 +51,16 @@ CREATE TABLE IF NOT EXISTS `seguranca` (
 -- Tabela: propriedades
 CREATE TABLE IF NOT EXISTS `propriedades` (
   `id_imovel` INT PRIMARY KEY AUTO_INCREMENT,
+  `valor_transacao_declarado` DECIMAL(15,2),
+  `data_transacao` DATE,
+  `valor_transacao_referencial` DECIMAL(15,2),
+  `percentual_transmitido` DECIMAL(5,2),
+  `valor_proporcional_referencia_mercado` DECIMAL (15,2),
+  `registro_cartorio` VARCHAR(100),
+  `registro_propriedade` INT,
+  `area_terreno_m2` DECIMAL(10,2),
+  `area_construida_m2` DECIMAL(10,2),
+  `uso_iptu` VARCHAR(50),
   `cep` VARCHAR(8),
   `nome_endereco` VARCHAR(150),
   `tipo_endereco` VARCHAR(50),
@@ -58,19 +68,11 @@ CREATE TABLE IF NOT EXISTS `propriedades` (
   `estado` VARCHAR(2),
   `bairro` VARCHAR(100),
   `zona` VARCHAR(50),
-  `latitude` VARCHAR(10),
-  `longitude` VARCHAR(10),
+  `latitude` VARCHAR(20),
+  `longitude` VARCHAR(20),
   `cidade` VARCHAR(100),
   `codigo_ibge_cidade` INT,
-  `ddd` VARCHAR(2),
-  `descricao_uso_iptu` VARCHAR(100),
-  `area_terreno_m2` DECIMAL(8,2),
-  `area_construida_m2` DECIMAL(8,2),
-  `registro_propriedade` VARCHAR(100),
-  `cartorio_registro` VARCHAR(100),
-  `valor_mercado_divulgado` DECIMAL(10,2),
-  `valor_proporcional_mercado` DECIMAL(10,2),
-  `valor_transacao_declarado` DECIMAL(10,2)
+  `ddd` VARCHAR(2)
 );
 
 -- Tabela: favoritos

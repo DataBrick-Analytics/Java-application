@@ -1,13 +1,18 @@
 package com.databrick.entity;
 
+import com.databrick.enums.IptuUse;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class Property {
 
     private Value value;
     private String registryOffice;
     private String propertyRegistration;
-    private String sqlStatus;
     private Double landAream2;
     private Double builtAream2;
+    private IptuUse iptuUse;
     private Address address;
     private String cityIBGE;
     private String ddd;
@@ -15,13 +20,13 @@ public class Property {
     public Property() {
     }
 
-    public Property(Value value, String registryOffice, String propertyRegistration, String sqlStatus, String landAream2, String builtAream2, Address address, String cityIBGE, String ddd) {
+    public Property(Value value, String registryOffice, String propertyRegistration, String landAream2, String builtAream2, String iptuUse, Address address, String cityIBGE, String ddd) {
         this.value = value;
         this.registryOffice = registryOffice;
         this.propertyRegistration = propertyRegistration;
-        this.sqlStatus = sqlStatus;
-        this.landAream2 = Double.valueOf(landAream2);
-        this.builtAream2 = Double.valueOf(builtAream2);
+        this.landAream2 = parseDouble(landAream2);
+        this.builtAream2 = parseDouble(builtAream2);
+        this.iptuUse = parseIptuUse(iptuUse);
         this.address = address;
         this.cityIBGE = cityIBGE;
         this.ddd = ddd;
@@ -51,14 +56,6 @@ public class Property {
         this.propertyRegistration = propertyRegistration;
     }
 
-    public String getSqlStatus() {
-        return sqlStatus;
-    }
-
-    public void setSqlStatus(String sqlStatus) {
-        this.sqlStatus = sqlStatus;
-    }
-
     public Double getLandAream2() {
         return landAream2;
     }
@@ -73,6 +70,14 @@ public class Property {
 
     public void setBuiltAream2(Double builtAream2) {
         this.builtAream2 = builtAream2;
+    }
+
+    public IptuUse getIptuUse() {
+        return iptuUse;
+    }
+
+    public void setIptuUse(IptuUse iptuUse) {
+        this.iptuUse = iptuUse;
     }
 
     public Address getAddress() {
@@ -98,4 +103,38 @@ public class Property {
     public void setDdd(String ddd) {
         this.ddd = ddd;
     }
+
+    public Double parseDouble(String valor) {
+        if (valor == null || valor.isBlank()) return 0.0;
+        try {
+            double raw = Double.parseDouble(valor.replace(",", "."));
+            return Math.floor(raw * 100) / 100.0; // corta para 2 casas decimais
+        } catch (NumberFormatException e) {
+            return 0.0;
+        }
+    }
+
+    public IptuUse parseIptuUse(String value) {
+        if (value == null || value.isBlank()) return null;
+
+        try {
+            int codigo = Integer.parseInt(value.replace(",", "").replace(".", ""));
+
+            if (codigo == 74 || codigo == 64) {
+                return IptuUse.OUTRAS_EDIFICACOES;
+            }
+
+            for (IptuUse tipo : IptuUse.values()) {
+                if (tipo.getValue() == codigo) {
+                    return tipo;
+                }
+            }
+
+        } catch (NumberFormatException e) {
+            return null;
+        }
+
+        return null;
+    }
+
 }

@@ -28,7 +28,10 @@ public class SecurityService {
 
                 DataFormatter formatter = new DataFormatter();
 
-                for (int i = 0; i < sheet.getPhysicalNumberOfRows(); i++) {
+                Integer success = 0;
+                Integer failed = 0;
+
+                for (int i = sheet.getPhysicalNumberOfRows() - 1; i >= 0; i--) {
                     Row row = sheet.getRow(i);
 
                     List<String> cellValues = new ArrayList<>();
@@ -48,9 +51,10 @@ public class SecurityService {
                             cellValues.get(8), cellValues.get(9), cellValues.get(10)
                     );
 
-                    jdbcService.saveSecurity(security);
+                    Boolean wasSaved = jdbcService.saveSecurity(security);
+                    if (wasSaved) success++; else failed++;
                 }
-                log.registerLog(Level.INFO, "Dados de segurança salvos no banco com sucesso");
+                log.registerLog(Level.INFO, "Dados de segurança salvos no banco. Sucesso: " + success + " dado(s). Falha: " + failed + " dado(s)");
             }
         } catch (Exception e) {
             log.registerLog(Level.ERROR, "Erro ao tentar processar os dados. Message: " + e.getMessage());

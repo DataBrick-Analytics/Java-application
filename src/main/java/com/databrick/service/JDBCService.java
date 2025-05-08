@@ -33,53 +33,51 @@ public class JDBCService implements LoggingUtility.LogSaver {
     }
 
 
-    public void saveProperty(Property property) {
+    public boolean saveProperty(Property property) {
         try {
-            String sqlScript = "INSERT INTO propriedades (id_imovel, cep, nome_endereco, tipo_endereco, " +
-                    "endereco_completo, estado, bairro, zona, latitude, longitude, cidade, " +
-                    "codigo_ibge_cidade, ddd, descricao_uso_iptu, area_terreno_m2, " +
-                    "area_construida_m2, registro_propriedade, cartorio_registro, " +
-                    "valor_mercado_divulgado, valor_proporcional_mercado, " +
-                    "valor_transacao_declarado, fk_regiao) " +
-                    "VALUES (default, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sqlScript = "INSERT INTO propriedades (valor_transacao_declarado, data_transacao, valor_transacao_referencial, " +
+                    "percentual_transmitido, valor_proporcional_referencia_mercado, registro_cartorio, " +
+                    "registro_propriedade, area_terreno_m2, area_construida_m2, " +
+                    "uso_iptu, cep, nome_endereco, tipo_endereco, " +
+                    "endereco_completo, estado, bairro, " +
+                    "zona, latitude, longitude, " +
+                    "cidade, codigo_ibge_cidade, ddd"
+                    + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             template.update(connection -> {
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
-                preparedStatement.setObject(2, property.getAddress().getCep());
-                preparedStatement.setObject(3, property.getAddress().getAddressName());
-                preparedStatement.setObject(4, property.getAddress().getAddressType());
-                preparedStatement.setObject(5, property.getAddress().getFullAddress());
-                preparedStatement.setObject(6, property.getAddress().getState());
-                preparedStatement.setObject(7, property.getAddress().getDistrict());
-                preparedStatement.setObject(8, property.getAddress().getZone());
-                preparedStatement.setObject(9, property.getAddress().getLatitude());
-                preparedStatement.setObject(10, property.getAddress().getLongitude());
-                preparedStatement.setObject(11, property.getAddress().getCity());
-                preparedStatement.setObject(12, property.getCityIBGE());
-                preparedStatement.setObject(13, property.getDdd());
-                preparedStatement.setObject(14, property.getLandAream2());
-                preparedStatement.setObject(15, property.getBuiltAream2());
-                preparedStatement.setObject(16, property.getPropertyRegistration());
-                preparedStatement.setObject(17, property.getRegistryOffice());
-                preparedStatement.setObject(18, property.getValue().getReferenceMarketValue());
-                preparedStatement.setObject(19, property.getValue().getProportionalReferenceMarketValue());
-                preparedStatement.setObject(20, property.getValue().getTransactionValueDeclared());
-
-                Integer fkRegiao = null;
-                if (property.getAddress().getDistrict() != null)
-                    fkRegiao = getPD(property.getAddress().getDistrict()).getId();
-                preparedStatement.setInt(21, fkRegiao);
-
+                preparedStatement.setObject(1, property.getValue().getTransactionValueDeclared());
+                preparedStatement.setObject(2, property.getValue().getTransactionDate());
+                preparedStatement.setObject(3, property.getValue().getReferenceMarketValue());
+                preparedStatement.setObject(4, property.getValue().getTransmittedProportion());
+                preparedStatement.setObject(5, property.getValue().getProportionalReferenceMarketValue());
+                preparedStatement.setObject(6, property.getRegistryOffice());
+                preparedStatement.setObject(7, property.getPropertyRegistration());
+                preparedStatement.setObject(8, property.getLandAream2());
+                preparedStatement.setObject(9, property.getBuiltAream2());
+                preparedStatement.setObject(10, property.getIptuUse().getValue());
+                preparedStatement.setObject(11, property.getAddress().getCep());
+                preparedStatement.setObject(12, property.getAddress().getAddressName());
+                preparedStatement.setObject(13, property.getAddress().getAddressType());
+                preparedStatement.setObject(14, property.getAddress().getFullAddress());
+                preparedStatement.setObject(15, property.getAddress().getState());
+                preparedStatement.setObject(16, property.getAddress().getDistrict());
+                preparedStatement.setObject(17, property.getAddress().getZone());
+                preparedStatement.setObject(18, property.getAddress().getLatitude());
+                preparedStatement.setObject(19, property.getAddress().getLongitude());
+                preparedStatement.setObject(20, property.getAddress().getCity());
+                preparedStatement.setObject(21, property.getCityIBGE());
+                preparedStatement.setObject(22, property.getDdd());
                 return preparedStatement;
             });
+            return true;
         } catch (Exception e) {
             log.registerLog(Level.ERROR, "Parece que ocorreu um erro ao tentar salvar os dados. Message: " + e.getMessage());
         }
-
-        log.registerLog(Level.INFO, "Dados de propriedades salvos no banco com sucesso");
+        return false;
     }
 
-    public void saveSecurity(Security security) throws Exception {
+    public boolean saveSecurity(Security security) throws Exception {
         try {
             Security PDDatabase = getPD(security.getPoliceStation());
             Integer newYear = security.getLastYearCollected() != null ? security.getLastYearCollected() : 0;
@@ -141,10 +139,11 @@ public class JDBCService implements LoggingUtility.LogSaver {
                     log.registerLog(Level.WARN, "O dado já esta registrado no banco e o mais recente possível!");
                 }
             }
+            return true;
         } catch (Exception e) {
             log.registerLog(Level.ERROR, "Parece que ocorreu um erro ao tentar salvar os dados. Message: " + e.getMessage());
-            // TODO remover log de salvo com sucesso caso alguem de erro
         }
+        return false;
     }
 
     @Override
@@ -160,7 +159,5 @@ public class JDBCService implements LoggingUtility.LogSaver {
             preparedStatement.setString(5, values.get(4));
             return preparedStatement;
         });
-
-        System.out.println("Log salvo com sucesso!");
     }
 }
