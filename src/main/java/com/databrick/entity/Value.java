@@ -1,9 +1,7 @@
 package com.databrick.entity;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -75,12 +73,16 @@ public class Value {
 
     public Date parseDate(String data) {
         if (data == null || data.isBlank()) return null;
-        List<String> patterns = List.of("MM/dd/yyyy H:mm", "MM/dd/yyyy HH:mm", "MM/dd/yyyy");
+
+        List<String> patterns = List.of(
+                "MM/dd/yy H:mm", "MM/dd/yy HH:mm", "M/d/yy H:mm", "M/d/yy HH:mm", "MM/dd/yyyy H:mm", "MM/dd/yyyy HH:mm"
+        );
+
         for (String pattern : patterns) {
             try {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-                LocalDate localDate = LocalDate.parse(data, formatter);
-                return Date.valueOf(localDate);
+                LocalDateTime dateTime = LocalDateTime.parse(data, formatter);
+                return Date.valueOf(dateTime.toLocalDate());
             } catch (Exception ignored) {}
         }
         return null;

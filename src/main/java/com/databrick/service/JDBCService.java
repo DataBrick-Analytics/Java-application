@@ -55,7 +55,7 @@ public class JDBCService implements LoggingUtility.LogSaver {
                 preparedStatement.setObject(7, property.getPropertyRegistration());
                 preparedStatement.setObject(8, property.getLandAream2());
                 preparedStatement.setObject(9, property.getBuiltAream2());
-                preparedStatement.setObject(10, property.getIptuUse().getValue());
+                preparedStatement.setObject(10, property.getIptuUse() != null ? property.getIptuUse().getValue() : null);
                 preparedStatement.setObject(11, property.getAddress().getCep());
                 preparedStatement.setObject(12, property.getAddress().getAddressName());
                 preparedStatement.setObject(13, property.getAddress().getAddressType());
@@ -77,12 +77,12 @@ public class JDBCService implements LoggingUtility.LogSaver {
         return false;
     }
 
-    public boolean saveSecurity(Security security) throws Exception {
+    public boolean saveSecurity(Security security) {
         try {
             Security PDDatabase = getPD(security.getPoliceStation());
             Integer newYear = security.getLastYearCollected() != null ? security.getLastYearCollected() : 0;
             if (PDDatabase == null) {
-                String sqlScript = "INSERT INTO seguranca (id_regiao, delegacia, " +
+                String sqlScript = "INSERT INTO seguranca (id_delegacia, delegacia, " +
                         "furtos_regiao, roubos_cargas, roubos, " +
                         "roubos_veiculos, furtos_veiculos, latrocinios, " +
                         "homicidio_doloso_acidente_transito, homicidio_culposo_acidente_transito, homicidio_culposo, dt_ultima_coleta) " +

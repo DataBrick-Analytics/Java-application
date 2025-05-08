@@ -2,9 +2,6 @@ package com.databrick.entity;
 
 import com.databrick.enums.IptuUse;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 public class Property {
 
     private Value value;
