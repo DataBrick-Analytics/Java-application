@@ -62,6 +62,7 @@ public class PropertyService {
                     Boolean wasSaved = jdbcService.saveProperty(property);
                     if (wasSaved) success++; else failed++;
                 }
+
                 log.registerLog(Level.INFO, "Dados de segurança salvos no banco. Sucesso: " + success + " dado(s). Falha: " + failed + " dado(s)");
             }
         } catch (Exception e) {
