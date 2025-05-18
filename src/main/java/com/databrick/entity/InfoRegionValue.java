@@ -9,10 +9,10 @@ public class InfoRegionValue {
     private Double fourthFifthPoorestHouseholdIncome;
     private Double fifthRichestHouseholdIncome;
     private Integer totalPopulation;
-    private Integer destrictCode;
+    private Integer districtCode;
     private Integer regionalDivision;
 
-    public InfoRegionValue(String municipalityCode, String regionCode, String fifthPoorestHouseholdIncome, String secondFifthPoorestHouseholdIncome, String thirdFifthPoorestHouseholdIncome, String fourthFifthPoorestHouseholdIncome, String fifthRichestHouseholdIncome, String totalPopulation, String destrictCode, String regionalDivision) {
+    public InfoRegionValue(String municipalityCode, String regionCode, String fifthPoorestHouseholdIncome, String secondFifthPoorestHouseholdIncome, String thirdFifthPoorestHouseholdIncome, String fourthFifthPoorestHouseholdIncome, String fifthRichestHouseholdIncome, String totalPopulation, String districtCode, String regionalDivision) {
         this.municipalityCode = parseInteger(municipalityCode);
         this.regionCode = parseInteger(regionCode);
         this.fifthPoorestHouseholdIncome = parseDouble(fifthPoorestHouseholdIncome);
@@ -21,7 +21,7 @@ public class InfoRegionValue {
         this.fourthFifthPoorestHouseholdIncome = parseDouble(fourthFifthPoorestHouseholdIncome);
         this.fifthRichestHouseholdIncome = parseDouble(fifthRichestHouseholdIncome);
         this.totalPopulation = parseInteger(totalPopulation);
-        this.destrictCode = parseInteger(destrictCode);
+        this.districtCode = parseInteger(districtCode);
         this.regionalDivision = parseInteger(regionalDivision);
     }
 
@@ -89,12 +89,12 @@ public class InfoRegionValue {
         this.totalPopulation = totalPopulation;
     }
 
-    public Integer getDestrictCode() {
-        return destrictCode;
+    public Integer getDistrictCode() {
+        return districtCode;
     }
 
-    public void setDestrictCode(Integer destrictCode) {
-        this.destrictCode = destrictCode;
+    public void setDistrictCode(Integer districtCode) {
+        this.districtCode = districtCode;
     }
 
     public Integer getRegionalDivision() {

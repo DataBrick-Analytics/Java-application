@@ -6,19 +6,19 @@ public class InfoRegion {
 
     private String  idCode;
     private String  nameUdh;
-    private String  minicipalityName;
+    private String municipalityName;
     private String  regionName;
-    private String  destrictName;
+    private String districtName;
     private String  nameOfRegionalCityHall;
     private String  regionalCityHall;
     private  InfoRegionValue infoRegion;
 
-    public InfoRegion(String idCode, String nameUdh, String minicipalityName, String regionName, String destrictName, String nameOfRegionalCityHall, String regionalCityHall, InfoRegionValue infoRegion) {
+    public InfoRegion(String idCode, String nameUdh, String municipalityName, String regionName, String districtName, String nameOfRegionalCityHall, String regionalCityHall, InfoRegionValue infoRegion) {
         this.idCode = idCode;
         this.nameUdh = nameUdh;
-        this.minicipalityName = minicipalityName;
+        this.municipalityName = municipalityName;
         this.regionName = regionName;
-        this.destrictName = destrictName;
+        this.districtName = districtName;
         this.nameOfRegionalCityHall = nameOfRegionalCityHall;
         this.regionalCityHall = regionalCityHall;
         this.infoRegion = infoRegion;
@@ -40,12 +40,12 @@ public class InfoRegion {
         this.nameUdh = nameUdh;
     }
 
-    public String getMinicipalityName() {
-        return minicipalityName;
+    public String getMunicipalityName() {
+        return municipalityName;
     }
 
-    public void setMinicipalityName(String minicipalityName) {
-        this.minicipalityName = minicipalityName;
+    public void setMunicipalityName(String municipalityName) {
+        this.municipalityName = municipalityName;
     }
 
     public String getRegionName() {
@@ -56,12 +56,12 @@ public class InfoRegion {
         this.regionName = regionName;
     }
 
-    public String getDestrictName() {
-        return destrictName;
+    public String getDistrictName() {
+        return districtName;
     }
 
-    public void setDestrictName(String destrictName) {
-        this.destrictName = destrictName;
+    public void setDistrictName(String districtName) {
+        this.districtName = districtName;
     }
 
     public String getNameOfRegionalCityHall() {
