@@ -20,7 +20,7 @@ public class Main {
     private static final PropertyService propertyService = new PropertyService();
     private static final SecurityService securityService = new SecurityService();
     private static  final InfoRegionService infoRegionService =  new InfoRegionService();
-    private static final S3Service bucketService = new S3Service(AppConfig.get("bucket.name"));
+  //  private static final S3Service bucketService = new S3Service(AppConfig.get("bucket.name"));
     public static void main(String[] args) {
         log.registerLog(Level.INFO, "Aplicação iniciada");
 
@@ -37,17 +37,19 @@ public class Main {
                 securityFiles = loadLocalFiles(AppConfig.get("local.security.file"));
                 propertyFiles = loadLocalFiles(AppConfig.get("local.property.file"));
                 infoRegionFiles = loadLocalFiles(AppConfig.get("local.region.file"));
+
+                securityService.extractionSecurityData(securityFiles);
+                propertyService.extractionPropertyData(propertyFiles);
+                infoRegionService.extractInfoRegionData(infoRegionFiles);
+
             } else {
                 log.registerLog(Level.INFO, "Modo produção. Lendo arquivos do bucket.");
 
-                securityFiles = bucketService.bucketObjectList(AppConfig.get("bucket.security.file"));
-                propertyFiles = bucketService.bucketObjectList(AppConfig.get("bucket.property.file"));
-                infoRegionFiles = loadLocalFiles(AppConfig.get("bucket.region.file"));
+                //securityFiles   = bucketService.bucketObjectList(AppConfig.get("bucket.security.file"));
+                //propertyFiles   = bucketService.bucketObjectList(AppConfig.get("bucket.property.file"));
+                //infoRegionFiles =bucketService.bucketObjectList(AppConfig.get("bucket.region.file"));
             }
 
-            securityService.extractionSecurityData(securityFiles);
-            propertyService.extractionPropertyData(propertyFiles);
-            infoRegionService.extractInfoRegionData(infoRegionFiles);
 
             log.registerLog(Level.INFO, "Leitura dos valores finalizada");
 
