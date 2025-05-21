@@ -1,6 +1,7 @@
 package com.databrick.service;
 
 import com.databrick.config.ConnectionBD;
+import com.databrick.entity.Pricing;
 import com.databrick.entity.Property;
 import com.databrick.entity.Security;
 import com.databrick.utils.LoggingUtility;
@@ -68,6 +69,24 @@ public class JDBCService implements LoggingUtility.LogSaver {
                 preparedStatement.setObject(20, property.getAddress().getCity());
                 preparedStatement.setObject(21, property.getCityIBGE());
                 preparedStatement.setObject(22, property.getDdd());
+                return preparedStatement;
+            });
+            return true;
+        } catch (Exception e) {
+            log.registerLog(Level.ERROR, "Parece que ocorreu um erro ao tentar salvar os dados. Message: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean savePricing(Pricing pricing) {
+        try {
+            String sqlScript = "INSERT INTO precificacao (valor_m2, area, endereco) VALUES (?, ?, ?)";
+
+            template.update(connection -> {
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
+                preparedStatement.setObject(1, pricing.getPrice());
+                preparedStatement.setObject(2, pricing.getArea());
+                preparedStatement.setObject(3, pricing.getAddress());
                 return preparedStatement;
             });
             return true;

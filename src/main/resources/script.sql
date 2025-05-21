@@ -112,3 +112,13 @@ CREATE TABLE IF NOT EXISTS `acoesDeUsuario` (
   FOREIGN KEY (`id_usuario`, `fk_empresa`) REFERENCES `usuarios` (`id_usuario`, `fk_empresa`),
   FOREIGN KEY (`id_acao`) REFERENCES `acoes` (`id_acao`)
 );
+
+CREATE TABLE IF NOT EXISTS `precificacao` (
+  `id_usuario` INT NOT NULL,
+  `fk_empresa` INT NOT NULL,
+  `id_acao` INT NOT NULL,
+  `dtAcao` DATETIME,
+  PRIMARY KEY (`id_usuario`, `fk_empresa`, `id_acao`),
+  FOREIGN KEY (`id_usuario`, `fk_empresa`) REFERENCES `usuarios` (`id_usuario`, `fk_empresa`),
+  FOREIGN KEY (`id_acao`) REFERENCES `acoes` (`id_acao`)
+)
