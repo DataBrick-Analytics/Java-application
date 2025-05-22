@@ -1,6 +1,7 @@
 package com.databrick.service;
 
 import com.databrick.config.ConnectionBD;
+import com.databrick.entity.InfoRegion;
 import com.databrick.entity.Pricing;
 import com.databrick.entity.Property;
 import com.databrick.entity.Security;
@@ -69,6 +70,42 @@ public class JDBCService implements LoggingUtility.LogSaver {
                 preparedStatement.setObject(20, property.getAddress().getCity());
                 preparedStatement.setObject(21, property.getCityIBGE());
                 preparedStatement.setObject(22, property.getDdd());
+                return preparedStatement;
+            });
+            return true;
+        } catch (Exception e) {
+            log.registerLog(Level.ERROR, "Parece que ocorreu um erro ao tentar salvar os dados. Message: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean saveInfoRegion(InfoRegion infoRegion) {
+        try {
+            String sqlScript = "INSERT INTO info_regiao (nome_udh, codigo_municipio, nome_municipio, " +
+                    "codigo_regiao, nome_regiao, renda_domiciliar_quinto_mais_pobre, " +
+                    "renda_domiciliar_segundo_quinto_mais_pobre, renda_domiciliar_terceiro_quinto_mais_pobre, " +
+                    "renda_domiciliar_quarto_quinto_mais_pobre, renda_domiciliar_quinto_mais_rico, " +
+                    "populacao_total, codigo_distrito, nome_distrito, " +
+                    "divisao_regional, nome_prefeitura_regional "
+                    + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+            template.update(connection -> {
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
+                preparedStatement.setObject(1, infoRegion.getNameUdh();
+                preparedStatement.setObject(2, infoRegion.ge;
+                preparedStatement.setObject(3, infoRegion.getValue().getReferenceMarketValue());
+                preparedStatement.setObject(4, infoRegion.getValue().getTransmittedProportion());
+                preparedStatement.setObject(5, infoRegion.getValue().getProportionalReferenceMarketValue());
+                preparedStatement.setObject(6, infoRegion.getRegistryOffice());
+                preparedStatement.setObject(7, infoRegion.getPropertyRegistration());
+                preparedStatement.setObject(8, infoRegion.getLandAream2());
+                preparedStatement.setObject(9, infoRegion.getBuiltAream2());
+                preparedStatement.setObject(10, infoRegion.getIptuUse() != null ? property.getIptuUse().getValue() : null);
+                preparedStatement.setObject(11, infoRegion.getAddress().getCep());
+                preparedStatement.setObject(12, infoRegion.getAddress().getAddressName());
+                preparedStatement.setObject(13, infoRegion.getAddress().getAddressType());
+                preparedStatement.setObject(14, infoRegion.getAddress().getFullAddress());
+                preparedStatement.setObject(15, infoRegion.getAddress().getState());
                 return preparedStatement;
             });
             return true;
