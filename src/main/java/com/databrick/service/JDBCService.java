@@ -1,10 +1,7 @@
 package com.databrick.service;
 
 import com.databrick.config.ConnectionBD;
-import com.databrick.entity.InfoRegion;
-import com.databrick.entity.Pricing;
-import com.databrick.entity.Property;
-import com.databrick.entity.Security;
+import com.databrick.entity.*;
 import com.databrick.utils.LoggingUtility;
 import org.apache.logging.log4j.Level;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -81,31 +78,48 @@ public class JDBCService implements LoggingUtility.LogSaver {
 
     public boolean saveInfoRegion(InfoRegion infoRegion) {
         try {
-            String sqlScript = "INSERT INTO info_regiao (nome_udh, codigo_municipio, nome_municipio, " +
-                    "codigo_regiao, nome_regiao, renda_domiciliar_quinto_mais_pobre, " +
-                    "renda_domiciliar_segundo_quinto_mais_pobre, renda_domiciliar_terceiro_quinto_mais_pobre, " +
-                    "renda_domiciliar_quarto_quinto_mais_pobre, renda_domiciliar_quinto_mais_rico, " +
-                    "populacao_total, codigo_distrito, nome_distrito, " +
-                    "divisao_regional, nome_prefeitura_regional "
-                    + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sqlScript = "INSERT INTO info_regiao (nome_udh, nome_municipio, " +
+                    "nome_regiao, nome_distrito, nome_prefeitura_regional "
+                    + ") VALUES (?, ?, ?, ?, ?)";
 
             template.update(connection -> {
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
-                preparedStatement.setObject(1, infoRegion.getNameUdh();
-                preparedStatement.setObject(2, infoRegion.ge;
-                preparedStatement.setObject(3, infoRegion.getValue().getReferenceMarketValue());
-                preparedStatement.setObject(4, infoRegion.getValue().getTransmittedProportion());
-                preparedStatement.setObject(5, infoRegion.getValue().getProportionalReferenceMarketValue());
-                preparedStatement.setObject(6, infoRegion.getRegistryOffice());
-                preparedStatement.setObject(7, infoRegion.getPropertyRegistration());
-                preparedStatement.setObject(8, infoRegion.getLandAream2());
-                preparedStatement.setObject(9, infoRegion.getBuiltAream2());
-                preparedStatement.setObject(10, infoRegion.getIptuUse() != null ? property.getIptuUse().getValue() : null);
-                preparedStatement.setObject(11, infoRegion.getAddress().getCep());
-                preparedStatement.setObject(12, infoRegion.getAddress().getAddressName());
-                preparedStatement.setObject(13, infoRegion.getAddress().getAddressType());
-                preparedStatement.setObject(14, infoRegion.getAddress().getFullAddress());
-                preparedStatement.setObject(15, infoRegion.getAddress().getState());
+                preparedStatement.setObject(1, infoRegion.getNameUdh());
+                preparedStatement.setObject(2, infoRegion.getMunicipalityName());
+                preparedStatement.setObject(3, infoRegion.getRegionName());
+                preparedStatement.setObject(4, infoRegion.getDistrictName());
+                preparedStatement.setObject(5, infoRegion.getNameOfRegionalCityHall());
+                return preparedStatement;
+            });
+            return true;
+        } catch (Exception e) {
+            log.registerLog(Level.ERROR, "Parece que ocorreu um erro ao tentar salvar os dados. Message: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean saveInfoRegionValue(InfoRegionValue infoRegionValue) {
+        try {
+            String sqlScript = "INSERT INTO info_regiao (codigo_municipio, " +
+                    "codigo_regiao, renda_domiciliar_quinto_mais_pobre, " +
+                    "renda_domiciliar_segundo_quinto_mais_pobre, renda_domiciliar_terceiro_quinto_mais_pobre, " +
+                    "renda_domiciliar_quarto_quinto_mais_pobre, renda_domiciliar_quinto_mais_rico, " +
+                    "populacao_total, codigo_distrito, " +
+                    "divisao_regional "
+                    + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+            template.update(connection -> {
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
+                preparedStatement.setObject(1, infoRegionValue.getMunicipalityCode());
+                preparedStatement.setObject(2, infoRegionValue.getRegionCode());
+                preparedStatement.setObject(3, infoRegionValue.getFifthPoorestHouseholdIncome());
+                preparedStatement.setObject(4, infoRegionValue.getSecondFifthPoorestHouseholdIncome());
+                preparedStatement.setObject(5, infoRegionValue.getThirdFifthPoorestHouseholdIncome());
+                preparedStatement.setObject(6, infoRegionValue.getFourthFifthPoorestHouseholdIncome());
+                preparedStatement.setObject(7, infoRegionValue.getFifthRichestHouseholdIncome());
+                preparedStatement.setObject(8, infoRegionValue.getTotalPopulation());
+                preparedStatement.setObject(9, infoRegionValue.getDistrictCode());
+                preparedStatement.setObject(10, infoRegionValue.getRegionalDivision());
                 return preparedStatement;
             });
             return true;
