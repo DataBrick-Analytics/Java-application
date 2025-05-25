@@ -78,48 +78,32 @@ public class JDBCService implements LoggingUtility.LogSaver {
 
     public boolean saveInfoRegion(InfoRegion infoRegion) {
         try {
-            String sqlScript = "INSERT INTO info_regiao (nome_udh, nome_municipio, " +
-                    "nome_regiao, nome_distrito, nome_prefeitura_regional "
-                    + ") VALUES (?, ?, ?, ?, ?)";
+            String sqlScript = "INSERT INTO info_regiao (nome_udh, nome_municipio, codigo_municipio, " +
+                    "nome_regiao, codigo_regiao, renda_domiciliar_quinto_mais_pobre, " +
+                    "renda_domiciliar_segundo_quinto_mais_pobre, renda_domiciliar_terceiro_quinto_mais_pobre, " +
+                    "renda_domiciliar_quarto_quinto_mais_pobre, renda_domiciliar_quinto_mais_rico, " +
+                    "populacao_total, nome_distrito,  codigo_distrito, " +
+                    "divisao_regional, nome_prefeitura_regional "
+                    + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             template.update(connection -> {
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
                 preparedStatement.setObject(1, infoRegion.getNameUdh());
                 preparedStatement.setObject(2, infoRegion.getMunicipalityName());
-                preparedStatement.setObject(3, infoRegion.getRegionName());
-                preparedStatement.setObject(4, infoRegion.getDistrictName());
-                preparedStatement.setObject(5, infoRegion.getNameOfRegionalCityHall());
-                return preparedStatement;
-            });
-            return true;
-        } catch (Exception e) {
-            log.registerLog(Level.ERROR, "Parece que ocorreu um erro ao tentar salvar os dados. Message: " + e.getMessage());
-        }
-        return false;
-    }
+                preparedStatement.setObject(3, infoRegion.getInfoRegion().getMunicipalityCode());
+                preparedStatement.setObject(4, infoRegion.getRegionName());
+                preparedStatement.setObject(5, infoRegion.getInfoRegion().getRegionCode());
+                preparedStatement.setObject(6, infoRegion.getInfoRegion().getFifthPoorestHouseholdIncome());
+                preparedStatement.setObject(7, infoRegion.getInfoRegion().getSecondFifthPoorestHouseholdIncome());
+                preparedStatement.setObject(8, infoRegion.getInfoRegion().getThirdFifthPoorestHouseholdIncome());
+                preparedStatement.setObject(9, infoRegion.getInfoRegion().getFourthFifthPoorestHouseholdIncome());
+                preparedStatement.setObject(10, infoRegion.getInfoRegion().getFifthRichestHouseholdIncome());
+                preparedStatement.setObject(11, infoRegion.getInfoRegion().getTotalPopulation());
+                preparedStatement.setObject(12, infoRegion.getDistrictName());
+                preparedStatement.setObject(13, infoRegion.getInfoRegion().getDistrictCode());
+                preparedStatement.setObject(14, infoRegion.getInfoRegion().getRegionalDivision());
+                preparedStatement.setObject(15, infoRegion.getNameOfRegionalCityHall());
 
-    public boolean saveInfoRegionValue(InfoRegionValue infoRegionValue) {
-        try {
-            String sqlScript = "INSERT INTO info_regiao (codigo_municipio, " +
-                    "codigo_regiao, renda_domiciliar_quinto_mais_pobre, " +
-                    "renda_domiciliar_segundo_quinto_mais_pobre, renda_domiciliar_terceiro_quinto_mais_pobre, " +
-                    "renda_domiciliar_quarto_quinto_mais_pobre, renda_domiciliar_quinto_mais_rico, " +
-                    "populacao_total, codigo_distrito, " +
-                    "divisao_regional "
-                    + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-            template.update(connection -> {
-                PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
-                preparedStatement.setObject(1, infoRegionValue.getMunicipalityCode());
-                preparedStatement.setObject(2, infoRegionValue.getRegionCode());
-                preparedStatement.setObject(3, infoRegionValue.getFifthPoorestHouseholdIncome());
-                preparedStatement.setObject(4, infoRegionValue.getSecondFifthPoorestHouseholdIncome());
-                preparedStatement.setObject(5, infoRegionValue.getThirdFifthPoorestHouseholdIncome());
-                preparedStatement.setObject(6, infoRegionValue.getFourthFifthPoorestHouseholdIncome());
-                preparedStatement.setObject(7, infoRegionValue.getFifthRichestHouseholdIncome());
-                preparedStatement.setObject(8, infoRegionValue.getTotalPopulation());
-                preparedStatement.setObject(9, infoRegionValue.getDistrictCode());
-                preparedStatement.setObject(10, infoRegionValue.getRegionalDivision());
                 return preparedStatement;
             });
             return true;

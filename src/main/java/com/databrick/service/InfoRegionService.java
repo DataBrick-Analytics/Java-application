@@ -52,6 +52,9 @@ public class InfoRegionService {
 
                     InfoRegionValue infoRegionValue = new InfoRegionValue(cellValues.get(2), cellValues.get(5), cellValues.get(77), cellValues.get(78),cellValues.get(79),cellValues.get(80), cellValues.get(81),cellValues.get(211),cellValues.get(231),cellValues.get(233) );
                     InfoRegion infoRegion = new InfoRegion(cellValues.get(0), cellValues.get(1), cellValues.get(3), cellValues.get(7), cellValues.get(232), cellValues.get(233), cellValues.get(234),infoRegionValue);
+
+                    Boolean wasSaved = jdbcService.saveInfoRegion(infoRegion);
+                    if (wasSaved) success++; else failed++;
                 }
                 log.registerLog(Level.INFO, "Dados de Informações de região salvos no banco. Sucesso: " + success + " dado(s). Falha: " + failed + " dado(s)");
             }
