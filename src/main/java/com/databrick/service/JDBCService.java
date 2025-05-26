@@ -83,8 +83,8 @@ public class JDBCService implements LoggingUtility.LogSaver {
                     "renda_domiciliar_segundo_quinto_mais_pobre, renda_domiciliar_terceiro_quinto_mais_pobre, " +
                     "renda_domiciliar_quarto_quinto_mais_pobre, renda_domiciliar_quinto_mais_rico, " +
                     "populacao_total, nome_distrito,  codigo_distrito, " +
-                    "divisao_regional, nome_prefeitura_regional "
-                    + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "divisao_regional, nome_prefeitura_regional"
+                    + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             template.update(connection -> {
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
@@ -122,6 +122,45 @@ public class JDBCService implements LoggingUtility.LogSaver {
                 preparedStatement.setObject(1, pricing.getPrice());
                 preparedStatement.setObject(2, pricing.getArea());
                 preparedStatement.setObject(3, pricing.getAddress());
+                return preparedStatement;
+            });
+            return true;
+        } catch (Exception e) {
+            log.registerLog(Level.ERROR, "Parece que ocorreu um erro ao tentar salvar os dados. Message: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean saveHealthCare(HealthCare healthCare) {
+        try {
+            String sqlScript = "INSERT INTO saude (codigo_distrito, nome_distrito, nome_unidade, bairro, tipo_unidade) VALUES (?, ?, ?, ?, ?)";
+
+            template.update(connection -> {
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
+                preparedStatement.setObject(1, healthCare.getDistrictCode());
+                preparedStatement.setObject(2, healthCare.getDistrictName());
+                preparedStatement.setObject(3, healthCare.getUnitName());
+                preparedStatement.setObject(4, healthCare.getNeighborhood());
+                preparedStatement.setObject(5, healthCare.getUnitType());
+                return preparedStatement;
+            });
+            return true;
+        } catch (Exception e) {
+            log.registerLog(Level.ERROR, "Parece que ocorreu um erro ao tentar salvar os dados. Message: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean saveEducationSystem(EducationSystem educationSystem) {
+        try {
+            String sqlScript = "INSERT INTO educacao (nome_escola, bairro, nome_distrito, codigo_distrito) VALUES (?, ?, ?, ?)";
+
+            template.update(connection -> {
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
+                preparedStatement.setObject(1, educationSystem.getSchoolName());
+                preparedStatement.setObject(2, educationSystem.getNeighborhood());
+                preparedStatement.setObject(3, educationSystem.getDistrictName());
+                preparedStatement.setObject(4, educationSystem.getDistrictCode());
                 return preparedStatement;
             });
             return true;
