@@ -1,6 +1,6 @@
 package com.databrick.service;
 
-import com.databrick.entity.HealthCare;
+import com.databrick.entity.Parks;
 import com.databrick.utils.LoggingUtility;
 import org.apache.logging.log4j.Level;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -13,13 +13,13 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HealthCareService {
+public class ParksService {
 
     private final LoggingUtility log = new LoggingUtility(PropertyService.class.getName());
     private final JDBCService jdbcService = new JDBCService();
 
-    public void extractionHealthCareData(List<InputStream> bucketObjects) {
-        log.registerLog(Level.INFO,"Iniciando o processamento de dados de saúde");
+    public void extractionParksData(List<InputStream> bucketObjects) {
+        log.registerLog(Level.INFO,"Iniciando o processamento de dados de parques");
         try {
             for (InputStream bucketObject : bucketObjects) {
                 Workbook workbook = new XSSFWorkbook(bucketObject);
@@ -46,12 +46,12 @@ public class HealthCareService {
                         continue;
                     }
 
-                    HealthCare healthCare = new HealthCare(cellValues.get(7), cellValues.get(8), cellValues.get(13), cellValues.get(15), cellValues.get(22));
+                    Parks parks = new Parks(cellValues.get(1), cellValues.get(2), cellValues.get(3));
 
-                    Boolean wasSaved = jdbcService.saveHealthCare(healthCare);
+                    Boolean wasSaved = jdbcService.saveParks(parks);
                     if (wasSaved) success++; else failed++;
                 }
-                log.registerLog(Level.INFO, "Dados de precificação salvos no banco. Sucesso: " + success + " dado(s). Falha: " + failed + " dado(s)");
+                log.registerLog(Level.INFO, "Dados de parques salvos no banco. Sucesso: " + success + " dado(s). Falha: " + failed + " dado(s)");
             }
         } catch (Exception e) {
             log.registerLog(Level.ERROR, "Erro ao tentar processar os dados. Message: " + e.getMessage());

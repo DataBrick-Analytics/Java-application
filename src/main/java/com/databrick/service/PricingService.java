@@ -19,7 +19,7 @@ public class PricingService {
     private final LoggingUtility log = new LoggingUtility(PropertyService.class.getName());
     private final JDBCService jdbcService = new JDBCService();
 
-    public void extractionPropertyData(List<InputStream> bucketObjects) {
+    public void extractionPricingData(List<InputStream> bucketObjects) {
         log.registerLog(Level.INFO,"Iniciando o processamento de dados de precificação");
         try {
             for (InputStream bucketObject : bucketObjects) {

@@ -17,7 +17,7 @@ public class EducationSystemService {
     private final LoggingUtility log = new LoggingUtility(PropertyService.class.getName());
     private final JDBCService jdbcService = new JDBCService();
 
-    public void extractionPropertyData(List<InputStream> bucketObjects) {
+    public void extractionEducationSystemData(List<InputStream> bucketObjects) {
         log.registerLog(Level.INFO,"Iniciando o processamento de dados de educação");
         try {
             for (InputStream bucketObject : bucketObjects) {
