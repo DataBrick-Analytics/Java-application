@@ -115,13 +115,14 @@ public class JDBCService implements LoggingUtility.LogSaver {
 
     public boolean savePricing(Pricing pricing) {
         try {
-            String sqlScript = "INSERT INTO precificacao (valor_m2, area, endereco) VALUES (?, ?, ?)";
+            String sqlScript = "INSERT INTO precificacao (data_registro, valor_m2, area, endereco) VALUES (?, ?, ?, ?)";
 
             template.update(connection -> {
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
-                preparedStatement.setObject(1, pricing.getPrice());
-                preparedStatement.setObject(2, pricing.getArea());
-                preparedStatement.setObject(3, pricing.getAddress());
+                preparedStatement.setObject(1, pricing.getRegisteredDate());
+                preparedStatement.setObject(2, pricing.getPrice());
+                preparedStatement.setObject(3, pricing.getArea());
+                preparedStatement.setObject(4, pricing.getAddress());
                 return preparedStatement;
             });
             return true;
@@ -133,13 +134,50 @@ public class JDBCService implements LoggingUtility.LogSaver {
 
     public boolean saveParks(Parks parks) {
         try {
-            String sqlScript = "INSERT INTO parques (nome, nome_distrito, codigo_distrito) VALUES (?, ?, ?)";
+            String sqlScript = "INSERT INTO parque (nome, nome_distrito, codigo_distrito) VALUES (?, ?, ?)";
 
             template.update(connection -> {
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
                 preparedStatement.setObject(1, parks.getName());
                 preparedStatement.setObject(2, parks.getDistrictName());
                 preparedStatement.setObject(3, parks.getDistrictCode());
+                return preparedStatement;
+            });
+            return true;
+        } catch (Exception e) {
+            log.registerLog(Level.ERROR, "Parece que ocorreu um erro ao tentar salvar os dados. Message: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean saveDistrict(District district) {
+        try {
+            String sqlScript = "INSERT INTO distrito (nome_distrito, codigo_distrito) VALUES (?, ?)";
+
+            template.update(connection -> {
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
+                preparedStatement.setObject(1, district.getDistrictName());
+                preparedStatement.setObject(2, district.getDistrictCode());
+                return preparedStatement;
+            });
+            return true;
+        } catch (Exception e) {
+            log.registerLog(Level.ERROR, "Parece que ocorreu um erro ao tentar salvar os dados. Message: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean saveTransportation(Transportation transportation) {
+        try {
+            String sqlScript = "INSERT INTO transporte (nome_distrito, qtd_pontos_onibus, qtd_estacoes_trem_metro, codigo_distrito) VALUES (?, ?, ?, ?)";
+
+            template.update(connection -> {
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
+                preparedStatement.setObject(1, transportation.getDistrictName());
+                preparedStatement.setObject(2, transportation.getBusStops());
+                preparedStatement.setObject(3, transportation.getTrainOrSubwayStations());
+                preparedStatement.setObject(4, transportation.getDistrictCode());
+
                 return preparedStatement;
             });
             return true;

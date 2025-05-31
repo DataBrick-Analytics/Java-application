@@ -1,7 +1,6 @@
 package com.databrick.service;
 
-import com.databrick.entity.Pricing;
-
+import com.databrick.entity.Transportation;
 import com.databrick.utils.LoggingUtility;
 import org.apache.logging.log4j.Level;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -14,13 +13,12 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PricingService {
-
+public class TransportationService {
     private final LoggingUtility log = new LoggingUtility(PropertyService.class.getName());
     private final JDBCService jdbcService = new JDBCService();
 
-    public void extractionPricingData(List<InputStream> bucketObjects) {
-        log.registerLog(Level.INFO,"Iniciando o processamento de dados de precificação");
+    public void extractionTransportationData(List<InputStream> bucketObjects) {
+        log.registerLog(Level.INFO,"Iniciando o processamento de dados de transportes");
         try {
             for (InputStream bucketObject : bucketObjects) {
                 Workbook workbook = new XSSFWorkbook(bucketObject);
@@ -47,15 +45,16 @@ public class PricingService {
                         continue;
                     }
 
-                    Pricing pricing = new Pricing(cellValues.get(2), cellValues.get(3), cellValues.get(4), cellValues.get(5));
+                    Transportation transportation = new Transportation(cellValues.get(1), cellValues.get(2), cellValues.get(3), cellValues.get(4));
 
-                    Boolean wasSaved = jdbcService.savePricing(pricing);
+                    Boolean wasSaved = jdbcService.saveTransportation(transportation);
                     if (wasSaved) success++; else failed++;
                 }
-                log.registerLog(Level.INFO, "Dados de precificação salvos no banco. Sucesso: " + success + " dado(s). Falha: " + failed + " dado(s)");
+                log.registerLog(Level.INFO, "Dados de transporte salvos no banco. Sucesso: " + success + " dado(s). Falha: " + failed + " dado(s)");
             }
         } catch (Exception e) {
             log.registerLog(Level.ERROR, "Erro ao tentar processar os dados. Message: " + e.getMessage());
         }
     }
 }
+

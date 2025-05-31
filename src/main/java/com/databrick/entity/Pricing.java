@@ -1,16 +1,30 @@
 package com.databrick.entity;
 
 
-public class Pricing {
+import java.sql.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
+public class Pricing {
+    private Date registeredDate;
     private Double price;
     private Double area;
     private String address;
 
-    public Pricing(String price, String area, String address) {
+    public Pricing(String registeredDate, String price, String area, String address) {
+        this.registeredDate = parseDate(registeredDate);
         this.price = parseDouble(price);
         this.area = parseDouble(area);
         this.address = addressToRegion(address);
+    }
+
+    public Date getRegisteredDate() {
+        return registeredDate;
+    }
+
+    public void setRegisteredDate(Date registeredDate) {
+        this.registeredDate = registeredDate;
     }
 
     public Double getArea() {
@@ -62,6 +76,23 @@ public class Pricing {
 
         address = address.strip();
         return address;
+    }
+
+    public Date parseDate(String data) {
+        if (data == null || data.isBlank()) return null;
+
+        List<String> patterns = List.of(
+                "YYYY-MM-DDTHH:MM:SSZ\n"
+        );
+
+        for (String pattern : patterns) {
+            try {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+                LocalDateTime dateTime = LocalDateTime.parse(data, formatter);
+                return Date.valueOf(dateTime.toLocalDate());
+            } catch (Exception ignored) {}
+        }
+        return null;
     }
 }
 
