@@ -132,6 +132,26 @@ public class JDBCService implements LoggingUtility.LogSaver {
         return false;
     }
 
+    public boolean saveTransportationSystem(TransportationSystem transportationSystem) {
+        try {
+            String sqlScript = "INSERT INTO mobilidade (nome_distrito, codigo_distrito, qtd_pontos_onibus, qtd_estacoes_metro, qtd_estacoes_trem) VALUES (?, ?, ?, ?, ?)";
+
+            template.update(connection -> {
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
+                preparedStatement.setObject(1, transportationSystem.getDistrictName());
+                preparedStatement.setObject(2, transportationSystem.getDistrictCode());
+                preparedStatement.setObject(3, transportationSystem.getBusStops());
+                preparedStatement.setObject(4, transportationSystem.getMetroStops());
+                preparedStatement.setObject(5, transportationSystem.getTrainStops());
+                return preparedStatement;
+            });
+            return true;
+        } catch (Exception e) {
+            log.registerLog(Level.ERROR, "Parece que ocorreu um erro ao tentar salvar os dados. Message: " + e.getMessage());
+        }
+        return false;
+    }
+
     public boolean saveParks(Parks parks) {
         try {
             String sqlScript = "INSERT INTO parque (nome, nome_distrito, codigo_distrito) VALUES (?, ?, ?)";
