@@ -11,7 +11,7 @@ public class InfoRegion {
     private String districtName;
     private String  nameOfRegionalCityHall;
     private String  regionalCityHall;
-    private  InfoRegionValue infoRegion;
+    private InfoRegionValue infoRegion;
 
     public InfoRegion(String idCode, String nameUdh, String municipalityName, String regionName, String districtName, String nameOfRegionalCityHall, String regionalCityHall, InfoRegionValue infoRegion) {
         this.idCode = idCode;

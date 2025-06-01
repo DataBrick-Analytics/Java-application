@@ -3,12 +3,12 @@ package com.databrick.entity;
 public class Parks {
     private String name;
     private String districtName;
-    private Integer districtCode;
+    private Long districtCode;
 
     public Parks(String name, String districtName, String districtCode) {
         this.name = name;
         this.districtName = districtName;
-        this.districtCode = parseInteger(districtCode);
+        this.districtCode = parseLong(districtCode);
     }
 
     public String getName() {
@@ -27,18 +27,18 @@ public class Parks {
         this.districtName = districtName;
     }
 
-    public Integer getDistrictCode() {
+    public Long getDistrictCode() {
         return districtCode;
     }
 
-    public void setDistrictCode(Integer districtCode) {
+    public void setDistrictCode(Long districtCode) {
         this.districtCode = districtCode;
     }
 
-    private Integer parseInteger(String value) {
+    private Long parseLong(String value) {
         if (value == null || value.isBlank()) return null;
         try {
-            return Integer.valueOf(value.replace(",", "").replace(".", ""));
+            return Long.valueOf(value.replace(",", "").replace(".", ""));
         } catch (NumberFormatException e) {
             return null;
         }

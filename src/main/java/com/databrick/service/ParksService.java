@@ -31,7 +31,7 @@ public class ParksService {
                 Integer success = 0;
                 Integer failed = 0;
 
-                for (int i = 0; i < sheet.getPhysicalNumberOfRows(); i++) {
+                for (int i = 1; i < sheet.getPhysicalNumberOfRows(); i++) {
                     Row row = sheet.getRow(i);
 
                     List<String> cellValues = new ArrayList<>();
@@ -46,7 +46,7 @@ public class ParksService {
                         continue;
                     }
 
-                    Parks parks = new Parks(cellValues.get(1), cellValues.get(2), cellValues.get(3));
+                    Parks parks = new Parks(cellValues.get(0), cellValues.get(1), cellValues.get(2));
 
                     Boolean wasSaved = jdbcService.saveParks(parks);
                     if (wasSaved) success++; else failed++;

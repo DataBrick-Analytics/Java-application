@@ -2,17 +2,17 @@ package com.databrick.entity;
 
 public class District {
     private String districtName;
-    private Integer districtCode;
+    private Long districtCode;
 
     public District(String districtName, String districtCode) {
         this.districtName = districtName;
-        this.districtCode = parseInteger(districtCode);
+        this.districtCode = parseLong(districtCode);
     }
 
-    private Integer parseInteger(String value) {
+    private Long parseLong(String value) {
         if (value == null || value.isBlank()) return null;
         try {
-            return Integer.valueOf(value.replace(",", "").replace(".", ""));
+            return Long.valueOf(value.replace(",", "").replace(".", ""));
         } catch (NumberFormatException e) {
             return null;
         }
@@ -26,11 +26,11 @@ public class District {
         this.districtName = districtName;
     }
 
-    public Integer getDistrictCode() {
+    public Long getDistrictCode() {
         return districtCode;
     }
 
-    public void setDistrictCode(Integer districtCode) {
+    public void setDistrictCode(Long districtCode) {
         this.districtCode = districtCode;
     }
 }

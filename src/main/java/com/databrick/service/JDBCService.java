@@ -82,7 +82,7 @@ public class JDBCService implements LoggingUtility.LogSaver {
                     "nome_regiao, codigo_regiao, renda_domiciliar_quinto_mais_pobre, " +
                     "renda_domiciliar_segundo_quinto_mais_pobre, renda_domiciliar_terceiro_quinto_mais_pobre, " +
                     "renda_domiciliar_quarto_quinto_mais_pobre, renda_domiciliar_quinto_mais_rico, " +
-                    "populacao_total, nome_distrito,  codigo_distrito, " +
+                    "populacao_total, nome_distrito,  fk_distrito, " +
                     "divisao_regional, nome_prefeitura_regional"
                     + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -135,7 +135,7 @@ public class JDBCService implements LoggingUtility.LogSaver {
 
     public boolean saveParks(Parks parks) {
         try {
-            String sqlScript = "INSERT INTO parque (nome, nome_distrito, codigo_distrito) VALUES (?, ?, ?)";
+            String sqlScript = "INSERT INTO parques (id_parques, nome_parque, distrito, fk_distrito) VALUES (default, ?, ?, ?)";
 
             template.update(connection -> {
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
@@ -153,7 +153,7 @@ public class JDBCService implements LoggingUtility.LogSaver {
 
     public boolean saveDistrict(District district) {
         try {
-            String sqlScript = "INSERT INTO distrito (nome_distrito, codigo_distrito) VALUES (?, ?)";
+            String sqlScript = "INSERT INTO distrito (nome_distrito, id_distrito) VALUES (?, ?)";
 
             template.update(connection -> {
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
