@@ -30,7 +30,7 @@ public class TransportationService {
                 Integer success = 0;
                 Integer failed = 0;
 
-                for (int i = 0; i < sheet.getPhysicalNumberOfRows(); i++) {
+                for (int i = 1; i < sheet.getPhysicalNumberOfRows(); i++) {
                     Row row = sheet.getRow(i);
 
                     List<String> cellValues = new ArrayList<>();
