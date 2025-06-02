@@ -14,11 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EducationSystemService {
-    private final LoggingUtility log = new LoggingUtility(PropertyService.class.getName());
+    private final LoggingUtility log = new LoggingUtility(EducationSystemService.class.getName());
     private final JDBCService jdbcService = new JDBCService();
 
     public void extractionEducationSystemData(List<InputStream> bucketObjects) {
-        log.registerLog(Level.INFO,"Iniciando o processamento de dados de educação");
+        log.registerLog(Level.INFO,"Iniciando o processamento de dados do sistema de educação");
         try {
             for (InputStream bucketObject : bucketObjects) {
                 Workbook workbook = new XSSFWorkbook(bucketObject);
@@ -45,12 +45,12 @@ public class EducationSystemService {
                         continue;
                     }
 
-                    EducationSystem educationSystem = new EducationSystem(cellValues.get(4), cellValues.get(11), cellValues.get(17), cellValues.get(18));
+                    EducationSystem educationSystem = new EducationSystem(cellValues.get(3), cellValues.get(10), cellValues.get(16), cellValues.get(17));
 
                     Boolean wasSaved = jdbcService.saveEducationSystem(educationSystem);
                     if (wasSaved) success++; else failed++;
                 }
-                log.registerLog(Level.INFO, "Dados de precificação salvos no banco. Sucesso: " + success + " dado(s). Falha: " + failed + " dado(s)");
+                log.registerLog(Level.INFO, "Dados do sistema de educação salvos no banco. Sucesso: " + success + " dado(s). Falha: " + failed + " dado(s)");
             }
         } catch (Exception e) {
             log.registerLog(Level.ERROR, "Erro ao tentar processar os dados. Message: " + e.getMessage());

@@ -4,19 +4,28 @@ public class Transportation {
     private String districtName;
     private Integer busStops;
     private Integer trainOrSubwayStations;
-    private Integer districtCode;
+    private Long districtCode;
 
     public Transportation(String districtName, String busStops, String trainOrSubwayStations, String districtCode) {
         this.districtName = districtName;
         this.busStops = parseInteger(busStops);
         this.trainOrSubwayStations = parseInteger(trainOrSubwayStations);
-        this.districtCode = parseInteger(districtCode);
+        this.districtCode = parseLong(districtCode);
     }
 
     private Integer parseInteger(String value) {
         if (value == null || value.isBlank()) return null;
         try {
             return Integer.valueOf(value.replace(",", "").replace(".", ""));
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private Long parseLong(String value) {
+        if (value == null || value.isBlank()) return null;
+        try {
+            return Long.valueOf(value.replace(",", "").replace(".", ""));
         } catch (NumberFormatException e) {
             return null;
         }
@@ -46,11 +55,11 @@ public class Transportation {
         this.trainOrSubwayStations = trainOrSubwayStations;
     }
 
-    public Integer getDistrictCode() {
+    public Long getDistrictCode() {
         return districtCode;
     }
 
-    public void setDistrictCode(Integer districtCode) {
+    public void setDistrictCode(Long districtCode) {
         this.districtCode = districtCode;
     }
 }

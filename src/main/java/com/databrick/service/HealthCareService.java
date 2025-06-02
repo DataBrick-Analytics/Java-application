@@ -15,11 +15,11 @@ import java.util.List;
 
 public class HealthCareService {
 
-    private final LoggingUtility log = new LoggingUtility(PropertyService.class.getName());
+    private final LoggingUtility log = new LoggingUtility(HealthCareService.class.getName());
     private final JDBCService jdbcService = new JDBCService();
 
     public void extractionHealthCareData(List<InputStream> bucketObjects) {
-        log.registerLog(Level.INFO,"Iniciando o processamento de dados de saúde");
+        log.registerLog(Level.INFO,"Iniciando o processamento de dados do sistema de saúde");
         try {
             for (InputStream bucketObject : bucketObjects) {
                 Workbook workbook = new XSSFWorkbook(bucketObject);
@@ -46,12 +46,12 @@ public class HealthCareService {
                         continue;
                     }
 
-                    HealthCare healthCare = new HealthCare(cellValues.get(7), cellValues.get(8), cellValues.get(13), cellValues.get(15), cellValues.get(22));
+                    HealthCare healthCare = new HealthCare(cellValues.get(24), cellValues.get(6), cellValues.get(11), cellValues.get(20), cellValues.get(13));
 
                     Boolean wasSaved = jdbcService.saveHealthCare(healthCare);
                     if (wasSaved) success++; else failed++;
                 }
-                log.registerLog(Level.INFO, "Dados de precificação salvos no banco. Sucesso: " + success + " dado(s). Falha: " + failed + " dado(s)");
+                log.registerLog(Level.INFO, "Dados do sistema de saúde salvos no banco. Sucesso: " + success + " dado(s). Falha: " + failed + " dado(s)");
             }
         } catch (Exception e) {
             log.registerLog(Level.ERROR, "Erro ao tentar processar os dados. Message: " + e.getMessage());
