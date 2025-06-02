@@ -15,7 +15,7 @@ import java.util.List;
 
 public class ParksService {
 
-    private final LoggingUtility log = new LoggingUtility(PropertyService.class.getName());
+    private final LoggingUtility log = new LoggingUtility(ParksService.class.getName());
     private final JDBCService jdbcService = new JDBCService();
 
     public void extractionParksData(List<InputStream> bucketObjects) {
