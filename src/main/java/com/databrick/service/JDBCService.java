@@ -115,14 +115,15 @@ public class JDBCService implements LoggingUtility.LogSaver {
 
     public boolean savePricing(Pricing pricing) {
         try {
-            String sqlScript = "INSERT INTO precificacao (data_registro, valor_m2, area, endereco) VALUES (?, ?, ?, ?)";
+            String sqlScript = "INSERT INTO precificacao (data_registro, valor_m2, area, nome_distrito, codigo_distrito) VALUES (?, ?, ?, ?, ?)";
 
             template.update(connection -> {
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
                 preparedStatement.setObject(1, pricing.getRegisteredDate());
                 preparedStatement.setObject(2, pricing.getPrice());
                 preparedStatement.setObject(3, pricing.getArea());
-                preparedStatement.setObject(4, pricing.getAddress());
+                preparedStatement.setObject(4, pricing.getDistrictName());
+                preparedStatement.setObject(5, pricing.getDistrictCode());
                 return preparedStatement;
             });
             return true;

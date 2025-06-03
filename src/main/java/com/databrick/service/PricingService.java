@@ -16,7 +16,7 @@ import java.util.List;
 
 public class PricingService {
 
-    private final LoggingUtility log = new LoggingUtility(PropertyService.class.getName());
+    private final LoggingUtility log = new LoggingUtility(PricingService.class.getName());
     private final JDBCService jdbcService = new JDBCService();
 
     public void extractionPricingData(List<InputStream> bucketObjects) {
@@ -47,7 +47,7 @@ public class PricingService {
                         continue;
                     }
 
-                    Pricing pricing = new Pricing(cellValues.get(2), cellValues.get(3), cellValues.get(4), cellValues.get(5));
+                    Pricing pricing = new Pricing(cellValues.get(1), cellValues.get(2), cellValues.get(3), cellValues.get(4), cellValues.get(6));
 
                     Boolean wasSaved = jdbcService.savePricing(pricing);
                     if (wasSaved) success++; else failed++;

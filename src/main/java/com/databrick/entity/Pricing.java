@@ -10,13 +10,15 @@ public class Pricing {
     private Date registeredDate;
     private Double price;
     private Double area;
-    private String address;
+    private String districtName;
+    private Long districtCode;
 
-    public Pricing(String registeredDate, String price, String area, String address) {
+    public Pricing(String registeredDate, String price, String area, String districtName, String districtCode) {
         this.registeredDate = parseDate(registeredDate);
         this.price = parseDouble(price);
         this.area = parseDouble(area);
-        this.address = addressToRegion(address);
+        this.districtName = addressToRegion(districtName);
+        this.districtCode = parseLong(districtCode);
     }
 
     public Date getRegisteredDate() {
@@ -25,6 +27,14 @@ public class Pricing {
 
     public void setRegisteredDate(Date registeredDate) {
         this.registeredDate = registeredDate;
+    }
+
+    public Long getDistrictCode() {
+        return districtCode;
+    }
+
+    public void setDistrictCode(Long districtCode) {
+        this.districtCode = districtCode;
     }
 
     public Double getArea() {
@@ -43,12 +53,12 @@ public class Pricing {
         this.price = price;
     }
 
-    public String getAddress() {
-        return address;
+    public String getDistrictName() {
+        return districtName;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setDistrictName(String districtName) {
+        this.districtName = districtName;
     }
 
     public Double parseDouble(String valor) {
@@ -93,6 +103,15 @@ public class Pricing {
             } catch (Exception ignored) {}
         }
         return null;
+    }
+
+    private Long parseLong(String value) {
+        if (value == null || value.isBlank()) return null;
+        try {
+            return Long.valueOf(value.replace(",", "").replace(".", ""));
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 }
 
