@@ -35,13 +35,13 @@ public class JDBCService implements LoggingUtility.LogSaver {
     public boolean saveProperty(Property property) {
         try {
             String sqlScript = "INSERT INTO propriedades (valor_transacao_declarado, data_transacao, valor_transacao_referencial, " +
-                    "percentual_transmitido, valor_proporcional_referencia_mercado, registro_cartorio, " +
+                    "percentual_transmitido, valor_proporcional_referencia_mercado, codigo_distrito, registro_cartorio, " +
                     "registro_propriedade, area_terreno_m2, area_construida_m2, " +
                     "uso_iptu, cep, nome_endereco, tipo_endereco, " +
                     "endereco_completo, estado, bairro, " +
                     "zona, latitude, longitude, " +
                     "cidade, codigo_ibge_cidade, ddd"
-                    + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             template.update(connection -> {
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
@@ -50,23 +50,24 @@ public class JDBCService implements LoggingUtility.LogSaver {
                 preparedStatement.setObject(3, property.getValue().getReferenceMarketValue());
                 preparedStatement.setObject(4, property.getValue().getTransmittedProportion());
                 preparedStatement.setObject(5, property.getValue().getProportionalReferenceMarketValue());
-                preparedStatement.setObject(6, property.getRegistryOffice());
-                preparedStatement.setObject(7, property.getPropertyRegistration());
-                preparedStatement.setObject(8, property.getLandAream2());
-                preparedStatement.setObject(9, property.getBuiltAream2());
-                preparedStatement.setObject(10, property.getIptuUse() != null ? property.getIptuUse().getValue() : null);
-                preparedStatement.setObject(11, property.getAddress().getCep());
-                preparedStatement.setObject(12, property.getAddress().getAddressName());
-                preparedStatement.setObject(13, property.getAddress().getAddressType());
-                preparedStatement.setObject(14, property.getAddress().getFullAddress());
-                preparedStatement.setObject(15, property.getAddress().getState());
-                preparedStatement.setObject(16, property.getAddress().getDistrict());
-                preparedStatement.setObject(17, property.getAddress().getZone());
-                preparedStatement.setObject(18, property.getAddress().getLatitude());
-                preparedStatement.setObject(19, property.getAddress().getLongitude());
-                preparedStatement.setObject(20, property.getAddress().getCity());
-                preparedStatement.setObject(21, property.getCityIBGE());
-                preparedStatement.setObject(22, property.getDdd());
+                preparedStatement.setObject(6, property.getValue().getDistrictCode());
+                preparedStatement.setObject(7, property.getRegistryOffice());
+                preparedStatement.setObject(8, property.getPropertyRegistration());
+                preparedStatement.setObject(9, property.getLandAream2());
+                preparedStatement.setObject(10, property.getBuiltAream2());
+                preparedStatement.setObject(11, property.getIptuUse() != null ? property.getIptuUse().getValue() : null);
+                preparedStatement.setObject(12, property.getAddress().getCep());
+                preparedStatement.setObject(13, property.getAddress().getAddressName());
+                preparedStatement.setObject(14, property.getAddress().getAddressType());
+                preparedStatement.setObject(15, property.getAddress().getFullAddress());
+                preparedStatement.setObject(16, property.getAddress().getState());
+                preparedStatement.setObject(17, property.getAddress().getDistrict());
+                preparedStatement.setObject(18, property.getAddress().getZone());
+                preparedStatement.setObject(19, property.getAddress().getLatitude());
+                preparedStatement.setObject(20, property.getAddress().getLongitude());
+                preparedStatement.setObject(21, property.getAddress().getCity());
+                preparedStatement.setObject(22, property.getCityIBGE());
+                preparedStatement.setObject(23, property.getDdd());
                 return preparedStatement;
             });
             return true;
@@ -236,8 +237,8 @@ public class JDBCService implements LoggingUtility.LogSaver {
                 String sqlScript = "INSERT INTO seguranca (id_delegacia, delegacia, " +
                         "furtos_regiao, roubos_cargas, roubos, " +
                         "roubos_veiculos, furtos_veiculos, latrocinios, " +
-                        "homicidio_doloso_acidente_transito, homicidio_culposo_acidente_transito, homicidio_culposo, dt_ultima_coleta) " +
-                        "VALUES (default, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        "homicidio_doloso_acidente_transito, homicidio_culposo_acidente_transito, homicidio_culposo, dt_ultima_coleta, codigo_distrito) " +
+                        "VALUES (default, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
                 template.update(connection -> {
                     PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
@@ -252,6 +253,8 @@ public class JDBCService implements LoggingUtility.LogSaver {
                     preparedStatement.setObject(9, security.getUnintentionalHomicideTraffic());
                     preparedStatement.setObject(10, security.getUnintentionalHomicide());
                     preparedStatement.setObject(11, security.getLastYearCollected());
+                    preparedStatement.setObject(12, security.getDistrictCode());
+
                     return preparedStatement;
                 });
             } else {

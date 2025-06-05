@@ -12,13 +12,15 @@ public class Value {
     private Double referenceMarketValue;
     private Double transmittedProportion;
     private Double proportionalReferenceMarketValue;
+    private Long districtCode;
 
-    public Value(String transactionValueDeclared, String transactionDate, String referenceMarketValue, String transmittedProportion, String proportionalReferenceMarketValue) {
+    public Value(String transactionValueDeclared, String transactionDate, String referenceMarketValue, String transmittedProportion, String proportionalReferenceMarketValue, String districtCode) {
         this.transactionValueDeclared = parseDouble(transactionValueDeclared);
         this.transactionDate = parseDate(transactionDate);
         this.referenceMarketValue = parseDouble(referenceMarketValue);
         this.transmittedProportion = parseDouble(transmittedProportion);
         this.proportionalReferenceMarketValue = parseDouble(proportionalReferenceMarketValue);
+        this.districtCode = parseLong(districtCode);
     }
 
     public Double getTransactionValueDeclared() {
@@ -61,6 +63,14 @@ public class Value {
         this.proportionalReferenceMarketValue = proportionalReferenceMarketValue;
     }
 
+    public Long getDistrictCode() {
+        return districtCode;
+    }
+
+    public void setDistrictCode(Long districtCode) {
+        this.districtCode = districtCode;
+    }
+
     public Double parseDouble(String valor) {
         if (valor == null || valor.isBlank()) return 0.0;
         try {
@@ -86,6 +96,15 @@ public class Value {
             } catch (Exception ignored) {}
         }
         return null;
+    }
+
+    private Long parseLong(String value) {
+        if (value == null || value.isBlank()) return null;
+        try {
+            return Long.valueOf(value.replace(",", "").replace(".", ""));
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
 }

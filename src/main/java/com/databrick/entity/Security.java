@@ -14,11 +14,12 @@ public class Security {
     private Integer unintentionalHomicideTraffic;
     private Integer unintentionalHomicide;
     private Integer lastYearCollected;
+    private Long districtCode;
 
     public Security() {
     }
 
-    public Security(String policeStation, String theftsByRegion, String cargoRobbery, String robberies, String vehicleRobbery, String vehicleTheft, String violentThefts, String intentionalHomicideTraffic, String unintentionalHomicideTraffic, String unintentionalHomicide, String lastYearCollected) {
+    public Security(String policeStation, String theftsByRegion, String cargoRobbery, String robberies, String vehicleRobbery, String vehicleTheft, String violentThefts, String intentionalHomicideTraffic, String unintentionalHomicideTraffic, String unintentionalHomicide, String lastYearCollected, String districtCode) {
         this.policeStation = policeStation;
         this.theftsByRegion = parseInteger(theftsByRegion);
         this.cargoRobbery = parseInteger(cargoRobbery);
@@ -30,6 +31,7 @@ public class Security {
         this.unintentionalHomicideTraffic = parseInteger(unintentionalHomicideTraffic);
         this.unintentionalHomicide = parseInteger(unintentionalHomicide);
         this.lastYearCollected = parseInteger(lastYearCollected);
+        this.districtCode = parseLong(districtCode);
     }
 
     public Integer getId() {
@@ -128,10 +130,27 @@ public class Security {
         this.lastYearCollected = lastYearCollected;
     }
 
+    public Long getDistrictCode() {
+        return districtCode;
+    }
+
+    public void setDistrictCode(Long districtCode) {
+        this.districtCode = districtCode;
+    }
+
     private Integer parseInteger(String value) {
         if (value == null || value.isBlank()) return null;
         try {
             return Integer.valueOf(value.replace(",", "").replace(".", ""));
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private Long parseLong(String value) {
+        if (value == null || value.isBlank()) return null;
+        try {
+            return Long.valueOf(value.replace(",", "").replace(".", ""));
         } catch (NumberFormatException e) {
             return null;
         }
