@@ -46,7 +46,7 @@ public class DistrictService {
                         continue;
                     }
 
-                    District district = new District(cellValues.get(0), cellValues.get(1));
+                    District district = new District(cellValues.get(0), cellValues.get(1), cellValues.get(2));
 
                     Boolean wasSaved = jdbcService.saveDistrict(district);
                     if (wasSaved) success++; else failed++;
