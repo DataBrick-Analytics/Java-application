@@ -48,7 +48,7 @@ public class SecurityService {
                     Security security = new Security(
                             cellValues.get(0), cellValues.get(1), cellValues.get(2), cellValues.get(3),
                             cellValues.get(4), cellValues.get(5), cellValues.get(6), cellValues.get(7),
-                            cellValues.get(8), cellValues.get(9), cellValues.get(10)
+                            cellValues.get(8), cellValues.get(9), cellValues.get(10), cellValues.get(21)
                     );
 
                     Boolean wasSaved = jdbcService.saveSecurity(security);

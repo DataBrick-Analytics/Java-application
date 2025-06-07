@@ -1,8 +1,7 @@
 package com.databrick.service;
 
 import com.databrick.config.ConnectionBD;
-import com.databrick.entity.Property;
-import com.databrick.entity.Security;
+import com.databrick.entity.*;
 import com.databrick.utils.LoggingUtility;
 import org.apache.logging.log4j.Level;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -36,13 +35,13 @@ public class JDBCService implements LoggingUtility.LogSaver {
     public boolean saveProperty(Property property) {
         try {
             String sqlScript = "INSERT INTO propriedades (valor_transacao_declarado, data_transacao, valor_transacao_referencial, " +
-                    "percentual_transmitido, valor_proporcional_referencia_mercado, registro_cartorio, " +
+                    "percentual_transmitido, valor_proporcional_referencia_mercado, codigo_distrito, registro_cartorio, " +
                     "registro_propriedade, area_terreno_m2, area_construida_m2, " +
                     "uso_iptu, cep, nome_endereco, tipo_endereco, " +
                     "endereco_completo, estado, bairro, " +
                     "zona, latitude, longitude, " +
                     "cidade, codigo_ibge_cidade, ddd"
-                    + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             template.update(connection -> {
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
@@ -51,23 +50,177 @@ public class JDBCService implements LoggingUtility.LogSaver {
                 preparedStatement.setObject(3, property.getValue().getReferenceMarketValue());
                 preparedStatement.setObject(4, property.getValue().getTransmittedProportion());
                 preparedStatement.setObject(5, property.getValue().getProportionalReferenceMarketValue());
-                preparedStatement.setObject(6, property.getRegistryOffice());
-                preparedStatement.setObject(7, property.getPropertyRegistration());
-                preparedStatement.setObject(8, property.getLandAream2());
-                preparedStatement.setObject(9, property.getBuiltAream2());
-                preparedStatement.setObject(10, property.getIptuUse() != null ? property.getIptuUse().getValue() : null);
-                preparedStatement.setObject(11, property.getAddress().getCep());
-                preparedStatement.setObject(12, property.getAddress().getAddressName());
-                preparedStatement.setObject(13, property.getAddress().getAddressType());
-                preparedStatement.setObject(14, property.getAddress().getFullAddress());
-                preparedStatement.setObject(15, property.getAddress().getState());
-                preparedStatement.setObject(16, property.getAddress().getDistrict());
-                preparedStatement.setObject(17, property.getAddress().getZone());
-                preparedStatement.setObject(18, property.getAddress().getLatitude());
-                preparedStatement.setObject(19, property.getAddress().getLongitude());
-                preparedStatement.setObject(20, property.getAddress().getCity());
-                preparedStatement.setObject(21, property.getCityIBGE());
-                preparedStatement.setObject(22, property.getDdd());
+                preparedStatement.setObject(6, property.getValue().getDistrictCode());
+                preparedStatement.setObject(7, property.getRegistryOffice());
+                preparedStatement.setObject(8, property.getPropertyRegistration());
+                preparedStatement.setObject(9, property.getLandAream2());
+                preparedStatement.setObject(10, property.getBuiltAream2());
+                preparedStatement.setObject(11, property.getIptuUse() != null ? property.getIptuUse().getValue() : null);
+                preparedStatement.setObject(12, property.getAddress().getCep());
+                preparedStatement.setObject(13, property.getAddress().getAddressName());
+                preparedStatement.setObject(14, property.getAddress().getAddressType());
+                preparedStatement.setObject(15, property.getAddress().getFullAddress());
+                preparedStatement.setObject(16, property.getAddress().getState());
+                preparedStatement.setObject(17, property.getAddress().getDistrict());
+                preparedStatement.setObject(18, property.getAddress().getZone());
+                preparedStatement.setObject(19, property.getAddress().getLatitude());
+                preparedStatement.setObject(20, property.getAddress().getLongitude());
+                preparedStatement.setObject(21, property.getAddress().getCity());
+                preparedStatement.setObject(22, property.getCityIBGE());
+                preparedStatement.setObject(23, property.getDdd());
+                return preparedStatement;
+            });
+            return true;
+        } catch (Exception e) {
+            log.registerLog(Level.ERROR, "Parece que ocorreu um erro ao tentar salvar os dados. Message: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean saveInfoRegion(InfoRegion infoRegion) {
+        try {
+            String sqlScript = "INSERT INTO info_regiao (nome_udh, nome_municipio, codigo_municipio, " +
+                    "nome_regiao, codigo_regiao, renda_domiciliar_quinto_mais_pobre, " +
+                    "renda_domiciliar_segundo_quinto_mais_pobre, renda_domiciliar_terceiro_quinto_mais_pobre, " +
+                    "renda_domiciliar_quarto_quinto_mais_pobre, renda_domiciliar_quinto_mais_rico, " +
+                    "populacao_total, nome_distrito,  fk_distrito, " +
+                    "divisao_regional, nome_prefeitura_regional"
+                    + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+            template.update(connection -> {
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
+                preparedStatement.setObject(1, infoRegion.getNameUdh());
+                preparedStatement.setObject(2, infoRegion.getMunicipalityName());
+                preparedStatement.setObject(3, infoRegion.getInfoRegion().getMunicipalityCode());
+                preparedStatement.setObject(4, infoRegion.getRegionName());
+                preparedStatement.setObject(5, infoRegion.getInfoRegion().getRegionCode());
+                preparedStatement.setObject(6, infoRegion.getInfoRegion().getFifthPoorestHouseholdIncome());
+                preparedStatement.setObject(7, infoRegion.getInfoRegion().getSecondFifthPoorestHouseholdIncome());
+                preparedStatement.setObject(8, infoRegion.getInfoRegion().getThirdFifthPoorestHouseholdIncome());
+                preparedStatement.setObject(9, infoRegion.getInfoRegion().getFourthFifthPoorestHouseholdIncome());
+                preparedStatement.setObject(10, infoRegion.getInfoRegion().getFifthRichestHouseholdIncome());
+                preparedStatement.setObject(11, infoRegion.getInfoRegion().getTotalPopulation());
+                preparedStatement.setObject(12, infoRegion.getDistrictName());
+                preparedStatement.setObject(13, infoRegion.getInfoRegion().getDistrictCode());
+                preparedStatement.setObject(14, infoRegion.getInfoRegion().getRegionalDivision());
+                preparedStatement.setObject(15, infoRegion.getNameOfRegionalCityHall());
+
+                return preparedStatement;
+            });
+            return true;
+        } catch (Exception e) {
+            log.registerLog(Level.ERROR, "Parece que ocorreu um erro ao tentar salvar os dados. Message: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean savePricing(Pricing pricing) {
+        try {
+            String sqlScript = "INSERT INTO precificacao (data_registro, valor_m2, area, nome_distrito, codigo_distrito) VALUES (?, ?, ?, ?, ?)";
+
+            template.update(connection -> {
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
+                preparedStatement.setObject(1, pricing.getRegisteredDate());
+                preparedStatement.setObject(2, pricing.getPrice());
+                preparedStatement.setObject(3, pricing.getArea());
+                preparedStatement.setObject(4, pricing.getDistrictName());
+                preparedStatement.setObject(5, pricing.getDistrictCode());
+                return preparedStatement;
+            });
+            return true;
+        } catch (Exception e) {
+            log.registerLog(Level.ERROR, "Parece que ocorreu um erro ao tentar salvar os dados. Message: " + e.getMessage());
+        }
+        return false;
+    }
+    
+
+    public boolean saveParks(Parks parks) {
+        try {
+            String sqlScript = "INSERT INTO parques (id_parques, nome_parque, distrito, fk_distrito) VALUES (default, ?, ?, ?)";
+
+            template.update(connection -> {
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
+                preparedStatement.setObject(1, parks.getName());
+                preparedStatement.setObject(2, parks.getDistrictName());
+                preparedStatement.setObject(3, parks.getDistrictCode());
+                return preparedStatement;
+            });
+            return true;
+        } catch (Exception e) {
+            log.registerLog(Level.ERROR, "Parece que ocorreu um erro ao tentar salvar os dados. Message: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean saveDistrict(District district) {
+        try {
+            String sqlScript = "INSERT INTO distrito (nome_distrito, id_distrito, area_total) VALUES (?, ?, ?)";
+
+            template.update(connection -> {
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
+                preparedStatement.setObject(1, district.getDistrictName());
+                preparedStatement.setObject(2, district.getDistrictCode());
+                preparedStatement.setObject(3, district.getTotalArea());
+                return preparedStatement;
+            });
+            return true;
+        } catch (Exception e) {
+            log.registerLog(Level.ERROR, "Parece que ocorreu um erro ao tentar salvar os dados. Message: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean saveTransportation(Transportation transportation) {
+        try {
+            String sqlScript = "INSERT INTO transporte (nome_distrito, qtd_pontos_onibus, qtd_estacoes_trem_metro, codigo_distrito) VALUES (?, ?, ?, ?)";
+
+            template.update(connection -> {
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
+                preparedStatement.setObject(1, transportation.getDistrictName());
+                preparedStatement.setObject(2, transportation.getBusStops());
+                preparedStatement.setObject(3, transportation.getTrainOrSubwayStations());
+                preparedStatement.setObject(4, transportation.getDistrictCode());
+
+                return preparedStatement;
+            });
+            return true;
+        } catch (Exception e) {
+            log.registerLog(Level.ERROR, "Parece que ocorreu um erro ao tentar salvar os dados. Message: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean saveHealthCare(HealthCare healthCare) {
+        try {
+            String sqlScript = "INSERT INTO saude (codigo_distrito, nome_distrito, nome_unidade, bairro, tipo_unidade) VALUES (?, ?, ?, ?, ?)";
+
+            template.update(connection -> {
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
+                preparedStatement.setObject(1, healthCare.getDistrictCode());
+                preparedStatement.setObject(2, healthCare.getDistrictName());
+                preparedStatement.setObject(3, healthCare.getUnitName());
+                preparedStatement.setObject(4, healthCare.getNeighborhood());
+                preparedStatement.setObject(5, healthCare.getUnitType());
+                return preparedStatement;
+            });
+            return true;
+        } catch (Exception e) {
+            log.registerLog(Level.ERROR, "Parece que ocorreu um erro ao tentar salvar os dados. Message: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean saveEducationSystem(EducationSystem educationSystem) {
+        try {
+            String sqlScript = "INSERT INTO educacao (nome_escola, bairro, nome_distrito, codigo_distrito) VALUES (?, ?, ?, ?)";
+
+            template.update(connection -> {
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
+                preparedStatement.setObject(1, educationSystem.getSchoolName());
+                preparedStatement.setObject(2, educationSystem.getNeighborhood());
+                preparedStatement.setObject(3, educationSystem.getDistrictName());
+                preparedStatement.setObject(4, educationSystem.getDistrictCode());
                 return preparedStatement;
             });
             return true;
@@ -85,8 +238,8 @@ public class JDBCService implements LoggingUtility.LogSaver {
                 String sqlScript = "INSERT INTO seguranca (id_delegacia, delegacia, " +
                         "furtos_regiao, roubos_cargas, roubos, " +
                         "roubos_veiculos, furtos_veiculos, latrocinios, " +
-                        "homicidio_doloso_acidente_transito, homicidio_culposo_acidente_transito, homicidio_culposo, dt_ultima_coleta) " +
-                        "VALUES (default, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        "homicidio_doloso_acidente_transito, homicidio_culposo_acidente_transito, homicidio_culposo, dt_ultima_coleta, codigo_distrito) " +
+                        "VALUES (default, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
                 template.update(connection -> {
                     PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
@@ -101,6 +254,8 @@ public class JDBCService implements LoggingUtility.LogSaver {
                     preparedStatement.setObject(9, security.getUnintentionalHomicideTraffic());
                     preparedStatement.setObject(10, security.getUnintentionalHomicide());
                     preparedStatement.setObject(11, security.getLastYearCollected());
+                    preparedStatement.setObject(12, security.getDistrictCode());
+
                     return preparedStatement;
                 });
             } else {
