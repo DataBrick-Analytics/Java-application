@@ -66,6 +66,12 @@ public class S3Service {
             List<S3Object> objectList = s3Client.listObjects(listObjects).contents();
             List<InputStream> inputStreamList = new ArrayList<>();
             for (S3Object s3Object : objectList) {
+
+                if (s3Object.key().endsWith("/")) {
+                    log.registerLog(Level.INFO, "Ignorando pasta: " + s3Object.key());
+                    continue;
+                }
+
                 String key = s3Object.key();
 
                 GetObjectRequest getObjectRequest = GetObjectRequest.builder()

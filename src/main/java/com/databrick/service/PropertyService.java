@@ -48,7 +48,7 @@ public class PropertyService {
                         continue;
                     }
 
-                    Value propertyValue = new Value(cellValues.get(0), cellValues.get(1), cellValues.get(2), cellValues.get(3), cellValues.get(4));
+                    Value propertyValue = new Value(cellValues.get(0), cellValues.get(1), cellValues.get(2), cellValues.get(3), cellValues.get(4), cellValues.get(35));
                     Address propertyAddress = new Address(
                             cellValues.get(10), cellValues.get(11), cellValues.get(12),
                             cellValues.get(13), cellValues.get(14), cellValues.get(15),
@@ -62,6 +62,7 @@ public class PropertyService {
                     Boolean wasSaved = jdbcService.saveProperty(property);
                     if (wasSaved) success++; else failed++;
                 }
+
                 log.registerLog(Level.INFO, "Dados de segurança salvos no banco. Sucesso: " + success + " dado(s). Falha: " + failed + " dado(s)");
             }
         } catch (Exception e) {
