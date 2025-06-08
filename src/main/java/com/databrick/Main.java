@@ -32,7 +32,7 @@ public class Main {
     private static final ParksService parksService =  new ParksService();
     private static final PricingService pricingService =  new PricingService();
     private static final TransportationService transportationService =  new TransportationService();
-  //  private static final S3Service bucketService = new S3Service(AppConfig.get("bucket.name"));
+    private static final S3Service bucketService = new S3Service(AppConfig.get("bucket.name"));
     public static void main(String[] args) {
         log.registerLog(Level.INFO, "Aplicação iniciada");
 
@@ -62,23 +62,29 @@ public class Main {
                 pricingFiles = loadLocalFiles(AppConfig.get("local.pricing.file"));
                 transportationFiles = loadLocalFiles(AppConfig.get("local.transportation.file"));
 
-                districtService.extractionTransportationData(districtFiles);
-                parksService.extractionParksData(parksFiles);
-                infoRegionService.extractInfoRegionData(infoRegionFiles);
-                securityService.extractionSecurityData(securityFiles);
-                propertyService.extractionPropertyData(propertyFiles);
-                educationSystemService.extractionEducationSystemData(educationFiles);
-                healthCareService.extractionHealthCareData(healthCareFiles);
-                pricingService.extractionPricingData(pricingFiles);
-                transportationService.extractionTransportationData(transportationFiles);
-
             } else {
                 log.registerLog(Level.INFO, "Modo produção. Lendo arquivos do bucket.");
 
-                //securityFiles   = bucketService.bucketObjectList(AppConfig.get("bucket.security.file"));
-                //propertyFiles   = bucketService.bucketObjectList(AppConfig.get("bucket.property.file"));
-                //infoRegionFiles = bucketService.bucketObjectList(AppConfig.get("bucket.region.file"));
+                securityFiles   = bucketService.bucketObjectList(AppConfig.get("bucket.security.file"));
+                districtFiles   = bucketService.bucketObjectList(AppConfig.get("bucket.districts.file"));
+                educationFiles = bucketService.bucketObjectList(AppConfig.get("bucket.education.file"));
+                parksFiles = bucketService.bucketObjectList(AppConfig.get("bucket.parks.file"));
+                pricingFiles = bucketService.bucketObjectList(AppConfig.get("bucket.pricing.file"));
+                propertyFiles = bucketService.bucketObjectList(AppConfig.get("bucket.property.file"));
+                infoRegionFiles = bucketService.bucketObjectList(AppConfig.get("bucket.region.file"));
+                healthCareFiles = bucketService.bucketObjectList(AppConfig.get("bucket.healthcare.file"));
+                transportationFiles = bucketService.bucketObjectList(AppConfig.get("bucket.transportation.file"));
             }
+
+            districtService.extractionTransportationData(districtFiles);
+            parksService.extractionParksData(parksFiles);
+            infoRegionService.extractInfoRegionData(infoRegionFiles);
+            securityService.extractionSecurityData(securityFiles);
+            propertyService.extractionPropertyData(propertyFiles);
+            educationSystemService.extractionEducationSystemData(educationFiles);
+            healthCareService.extractionHealthCareData(healthCareFiles);
+            pricingService.extractionPricingData(pricingFiles);
+            transportationService.extractionTransportationData(transportationFiles);
 
             log.registerLog(Level.INFO, "Leitura dos valores finalizada");
 
