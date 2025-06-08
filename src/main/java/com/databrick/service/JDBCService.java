@@ -25,7 +25,7 @@ public class JDBCService implements LoggingUtility.LogSaver {
                 "roubos AS robberies, roubos_veiculos AS vehicleRobbery, furtos_veiculos AS vehicleTheft, " +
                 "latrocinios AS violentThefts, homicidio_doloso_acidente_transito AS intentionalHomicideTraffic, " +
                 "homicidio_culposo_acidente_transito AS unintentionalHomicideTraffic, homicidio_culposo AS unintentionalHomicide, " +
-                "dt_ultima_coleta AS lastYearCollected FROM seguranca WHERE delegacia LIKE ?";
+                "ano_ultima_coleta AS lastYearCollected FROM seguranca WHERE delegacia LIKE ?";
 
         List<Security> results = template.query(sqlScript, new BeanPropertyRowMapper<>(Security.class), "%" + district + "%");
         return results.isEmpty() ? null : results.getFirst();
@@ -34,40 +34,13 @@ public class JDBCService implements LoggingUtility.LogSaver {
 
     public boolean saveProperty(Property property) {
         try {
-            String sqlScript = "INSERT INTO propriedades (valor_transacao_declarado, data_transacao, valor_transacao_referencial, " +
-                    "percentual_transmitido, valor_proporcional_referencia_mercado, codigo_distrito, registro_cartorio, " +
-                    "registro_propriedade, area_terreno_m2, area_construida_m2, " +
-                    "uso_iptu, cep, nome_endereco, tipo_endereco, " +
-                    "endereco_completo, estado, bairro, " +
-                    "zona, latitude, longitude, " +
-                    "cidade, codigo_ibge_cidade, ddd"
-                    + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sqlScript = "INSERT INTO propriedade (fk_distrito, uso_iptu, data_criacao, data_edicao) " +
+                    "VALUES (?, ?, NOW(), NOW())";
 
             template.update(connection -> {
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
-                preparedStatement.setObject(1, property.getValue().getTransactionValueDeclared());
-                preparedStatement.setObject(2, property.getValue().getTransactionDate());
-                preparedStatement.setObject(3, property.getValue().getReferenceMarketValue());
-                preparedStatement.setObject(4, property.getValue().getTransmittedProportion());
-                preparedStatement.setObject(5, property.getValue().getProportionalReferenceMarketValue());
-                preparedStatement.setObject(6, property.getValue().getDistrictCode());
-                preparedStatement.setObject(7, property.getRegistryOffice());
-                preparedStatement.setObject(8, property.getPropertyRegistration());
-                preparedStatement.setObject(9, property.getLandAream2());
-                preparedStatement.setObject(10, property.getBuiltAream2());
-                preparedStatement.setObject(11, property.getIptuUse() != null ? property.getIptuUse().getValue() : null);
-                preparedStatement.setObject(12, property.getAddress().getCep());
-                preparedStatement.setObject(13, property.getAddress().getAddressName());
-                preparedStatement.setObject(14, property.getAddress().getAddressType());
-                preparedStatement.setObject(15, property.getAddress().getFullAddress());
-                preparedStatement.setObject(16, property.getAddress().getState());
-                preparedStatement.setObject(17, property.getAddress().getDistrict());
-                preparedStatement.setObject(18, property.getAddress().getZone());
-                preparedStatement.setObject(19, property.getAddress().getLatitude());
-                preparedStatement.setObject(20, property.getAddress().getLongitude());
-                preparedStatement.setObject(21, property.getAddress().getCity());
-                preparedStatement.setObject(22, property.getCityIBGE());
-                preparedStatement.setObject(23, property.getDdd());
+                preparedStatement.setObject(1, property.getDistrictCode());
+                preparedStatement.setObject(2, property.getIptuUse() != null ? property.getIptuUse().getValue() : null);
                 return preparedStatement;
             });
             return true;
@@ -110,34 +83,33 @@ public class JDBCService implements LoggingUtility.LogSaver {
             return true;
         } catch (Exception e) {
             log.registerLog(Level.ERROR, "Parece que ocorreu um erro ao tentar salvar os dados. Message: " + e.getMessage());
+            return false;
         }
-        return false;
     }
 
     public boolean savePricing(Pricing pricing) {
         try {
-            String sqlScript = "INSERT INTO precificacao (data_registro, valor_m2, area, nome_distrito, codigo_distrito) VALUES (?, ?, ?, ?, ?)";
+            String sqlScript = "INSERT INTO precificacao (data_precificacao, preco, area, fk_distrito, data_criacao, data_edicao) VALUES (?, ?, ?, ?, NOW(), NOW())";
 
             template.update(connection -> {
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
                 preparedStatement.setObject(1, pricing.getRegisteredDate());
                 preparedStatement.setObject(2, pricing.getPrice());
                 preparedStatement.setObject(3, pricing.getArea());
-                preparedStatement.setObject(4, pricing.getDistrictName());
-                preparedStatement.setObject(5, pricing.getDistrictCode());
+                preparedStatement.setObject(4, pricing.getDistrictCode());
                 return preparedStatement;
             });
             return true;
         } catch (Exception e) {
             log.registerLog(Level.ERROR, "Parece que ocorreu um erro ao tentar salvar os dados. Message: " + e.getMessage());
+            return false;
         }
-        return false;
     }
     
 
     public boolean saveParks(Parks parks) {
         try {
-            String sqlScript = "INSERT INTO parques (id_parques, nome_parque, distrito, fk_distrito) VALUES (default, ?, ?, ?)";
+            String sqlScript = "INSERT INTO parque (id_parques, nome_parque, nome_distrito, fk_distrito, data_criacao, data_edicao) VALUES (default, ?, ?, ?, NOW(), NOW())";
 
             template.update(connection -> {
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
@@ -148,14 +120,13 @@ public class JDBCService implements LoggingUtility.LogSaver {
             });
             return true;
         } catch (Exception e) {
-            log.registerLog(Level.ERROR, "Parece que ocorreu um erro ao tentar salvar os dados. Message: " + e.getMessage());
+            return false;
         }
-        return false;
     }
 
     public boolean saveDistrict(District district) {
         try {
-            String sqlScript = "INSERT INTO distrito (nome_distrito, id_distrito, area_total, zona) VALUES (?, ?, ?, ?)";
+            String sqlScript = "INSERT INTO distrito (nome_distrito, id_distrito, area, zona) VALUES (?, ?, ?, ?)";
 
             template.update(connection -> {
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
@@ -167,14 +138,13 @@ public class JDBCService implements LoggingUtility.LogSaver {
             });
             return true;
         } catch (Exception e) {
-            log.registerLog(Level.ERROR, "Parece que ocorreu um erro ao tentar salvar os dados. Message: " + e.getMessage());
+            return false;
         }
-        return false;
     }
 
     public boolean saveTransportation(Transportation transportation) {
         try {
-            String sqlScript = "INSERT INTO transporte (nome_distrito, qtd_pontos_onibus, qtd_estacoes_trem_metro, codigo_distrito) VALUES (?, ?, ?, ?)";
+            String sqlScript = "INSERT INTO mobilidade (nome_distrito, qtd_pontos_onibus, qtd_estacoes_trem_metro, fk_distrito, data_criacao, data_edicao) VALUES (?, ?, ?, ?, NOW(), NOW())";
 
             template.update(connection -> {
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
@@ -187,48 +157,44 @@ public class JDBCService implements LoggingUtility.LogSaver {
             });
             return true;
         } catch (Exception e) {
-            log.registerLog(Level.ERROR, "Parece que ocorreu um erro ao tentar salvar os dados. Message: " + e.getMessage());
+            return false;
         }
-        return false;
     }
 
     public boolean saveHealthCare(HealthCare healthCare) {
         try {
-            String sqlScript = "INSERT INTO saude (codigo_distrito, nome_distrito, nome_unidade, bairro, tipo_unidade) VALUES (?, ?, ?, ?, ?)";
+            String sqlScript = "INSERT INTO saude (fk_distrito, nome_distrito, nome_unidade, tipo_unidade) VALUES (?, ?, ?, ?)";
 
             template.update(connection -> {
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
                 preparedStatement.setObject(1, healthCare.getDistrictCode());
                 preparedStatement.setObject(2, healthCare.getDistrictName());
                 preparedStatement.setObject(3, healthCare.getUnitName());
-                preparedStatement.setObject(4, healthCare.getNeighborhood());
-                preparedStatement.setObject(5, healthCare.getUnitType());
+                preparedStatement.setObject(4, healthCare.getUnitType());
                 return preparedStatement;
             });
             return true;
         } catch (Exception e) {
-            log.registerLog(Level.ERROR, "Parece que ocorreu um erro ao tentar salvar os dados. Message: " + e.getMessage());
+            return false;
         }
-        return false;
     }
 
     public boolean saveEducationSystem(EducationSystem educationSystem) {
         try {
-            String sqlScript = "INSERT INTO educacao (nome_escola, bairro, nome_distrito, codigo_distrito) VALUES (?, ?, ?, ?)";
+            String sqlScript = "INSERT INTO educacao (nome_escola, nome_distrito, fk_distrito, data_criacao, data_edicao) VALUES (?, ?, ?, NOW(), NOW())";
 
             template.update(connection -> {
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
                 preparedStatement.setObject(1, educationSystem.getSchoolName());
-                preparedStatement.setObject(2, educationSystem.getNeighborhood());
-                preparedStatement.setObject(3, educationSystem.getDistrictName());
-                preparedStatement.setObject(4, educationSystem.getDistrictCode());
+                preparedStatement.setObject(2, educationSystem.getDistrictName());
+                preparedStatement.setObject(3, educationSystem.getDistrictCode());
                 return preparedStatement;
             });
             return true;
         } catch (Exception e) {
             log.registerLog(Level.ERROR, "Parece que ocorreu um erro ao tentar salvar os dados. Message: " + e.getMessage());
+            return false;
         }
-        return false;
     }
 
     public boolean saveSecurity(Security security) {
@@ -239,7 +205,7 @@ public class JDBCService implements LoggingUtility.LogSaver {
                 String sqlScript = "INSERT INTO seguranca (id_delegacia, delegacia, " +
                         "furtos_regiao, roubos_cargas, roubos, " +
                         "roubos_veiculos, furtos_veiculos, latrocinios, " +
-                        "homicidio_doloso_acidente_transito, homicidio_culposo_acidente_transito, homicidio_culposo, dt_ultima_coleta, codigo_distrito) " +
+                        "homicidio_doloso_acidente_transito, homicidio_culposo_acidente_transito, homicidio_culposo, ano_ultima_coleta, fk_distrito) " +
                         "VALUES (default, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
                 template.update(connection -> {
@@ -273,7 +239,7 @@ public class JDBCService implements LoggingUtility.LogSaver {
                             "homicidio_doloso_acidente_transito = homicidio_doloso_acidente_transito + ?, " +
                             "homicidio_culposo_acidente_transito = homicidio_culposo_acidente_transito + ?, " +
                             "homicidio_culposo = homicidio_culposo + ?, " +
-                            "dt_ultima_coleta = ? " +
+                            "ano_ultima_coleta = ? " +
                             "WHERE delegacia = ?";
 
                     template.update(connection -> {
@@ -292,19 +258,18 @@ public class JDBCService implements LoggingUtility.LogSaver {
                         return preparedStatement;
                     });
                 } else {
-                    log.registerLog(Level.WARN, "O dado já esta registrado no banco e o mais recente possível!");
+                    return false;
                 }
             }
             return true;
         } catch (Exception e) {
-            log.registerLog(Level.ERROR, "Parece que ocorreu um erro ao tentar salvar os dados. Message: " + e.getMessage());
+            return false;
         }
-        return false;
     }
 
     @Override
     public void saveLog(List<String> values) {
-        String sqlScript = "INSERT INTO logs (data_hora, tipo_processo, status, mensagem, usuarios) VALUES (?, ?, ?, ?, ?)";
+        String sqlScript = "INSERT INTO log (data_criacao, tipo_processo, status, mensagem, usuario) VALUES (?, ?, ?, ?, ?)";
 
         template.update(connection -> {
             PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);

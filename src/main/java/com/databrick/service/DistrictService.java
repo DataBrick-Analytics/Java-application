@@ -32,24 +32,28 @@ public class DistrictService {
                 Integer failed = 0;
 
                 for (int i = 1; i < sheet.getPhysicalNumberOfRows(); i++) {
-                    Row row = sheet.getRow(i);
+                    try {
+                        Row row = sheet.getRow(i);
 
-                    List<String> cellValues = new ArrayList<>();
-                    row.forEach(cell -> {
-                        String value = formatter.formatCellValue(cell);
-                        cellValues.add(value.isEmpty() || value.equalsIgnoreCase("nan") ? null : value);
-                    });
+                        List<String> cellValues = new ArrayList<>();
+                        row.forEach(cell -> {
+                            String value = formatter.formatCellValue(cell);
+                            cellValues.add(value.isEmpty() || value.equalsIgnoreCase("nan") ? null : value);
+                        });
 
-                    if (cellValues.contains(null)) {
-                        log.registerLog(Level.WARN, "Célula vazia encontrada na linha " + (i + 1));
+                        if (cellValues.contains(null)) {
+                            log.registerLog(Level.WARN, "Célula vazia encontrada na linha " + (i + 1));
+                            failed++;
+                            continue;
+                        }
+
+                        District district = new District(cellValues.get(0), cellValues.get(1), cellValues.get(2), cellValues.get(4));
+
+                        Boolean wasSaved = jdbcService.saveDistrict(district);
+                        if (wasSaved) success++;
+                    } catch (Exception e) {
                         failed++;
-                        continue;
                     }
-
-                    District district = new District(cellValues.get(0), cellValues.get(1), cellValues.get(2), cellValues.get(4));
-
-                    Boolean wasSaved = jdbcService.saveDistrict(district);
-                    if (wasSaved) success++; else failed++;
                 }
                 log.registerLog(Level.INFO, "Dados de distritos salvos no banco. Sucesso: " + success + " dado(s). Falha: " + failed + " dado(s)");
             }
