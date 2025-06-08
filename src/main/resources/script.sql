@@ -1,124 +1,233 @@
+DROP DATABASE databrick;
 CREATE DATABASE databrick;
 USE databrick;
 
--- Tabela: empresas
-CREATE TABLE IF NOT EXISTS `empresas` (
-  `id_empresa` INT PRIMARY KEY AUTO_INCREMENT,
-  `nome` VARCHAR(45),
-  `endereco` VARCHAR(80),
-  `telefone` VARCHAR(11),
-  `email` VARCHAR(45),
-  `data_cadastro` DATE
+CREATE TABLE IF NOT EXISTS `empresa` (
+  `id_empresa` INT NOT NULL auto_increment,
+  `razao_social` VARCHAR(45) NOT NULL UNIQUE,
+  `nome_fantasia`VARCHAR(50) NOT NULL,
+  `cnpj` VARCHAR(45) NULL UNIQUE,
+  `data_criacao` DATETIME NULL,
+  `date_edicao` DATETIME NULL,
+  PRIMARY KEY (`id_empresa`)
 );
 
--- Tabela: funcoes
-CREATE TABLE IF NOT EXISTS `funcoes` (
-  `id_funcao` INT PRIMARY KEY AUTO_INCREMENT,
-  `nome` VARCHAR(45),
-  `descricao` VARCHAR(45)
-);
-
--- Tabela: usuarios
-CREATE TABLE IF NOT EXISTS `usuarios` (
+CREATE TABLE IF NOT EXISTS `usuario` (
   `id_usuario` INT NOT NULL AUTO_INCREMENT,
-  `nome` VARCHAR(45),
-  `email` VARCHAR(85),
-  `senha` VARCHAR(45),
-  `data_cadastro` DATE,
+  `nome` VARCHAR(45) NOT NULL,
+  `email` VARCHAR(85) NOT NULL UNIQUE,
+  `senha` VARCHAR(64) NOT NULL,
   `fk_empresa` INT NOT NULL,
-  `fk_funcao` INT NOT NULL,
-  PRIMARY KEY (`id_usuario`, `fk_empresa`),
-  FOREIGN KEY (`fk_empresa`) REFERENCES `empresas` (`id_empresa`),
-  FOREIGN KEY (`fk_funcao`) REFERENCES `funcoes` (`id_funcao`)
+  `cpf` VARCHAR(11) NOT NULL UNIQUE,
+  `data_nasc` DATE NOT NULL,
+  `funcao_empresa` VARCHAR(45) NOT NULL,
+  `data_criacao` DATETIME NOT NULL,
+  `data_edicao` DATETIME NOT NULL,
+  PRIMARY KEY (`id_usuario`),
+  FOREIGN KEY (`fk_empresa`) REFERENCES empresa(`id_empresa`)
 );
 
--- Tabela: seguranca
+CREATE TABLE IF NOT EXISTS `distrito` (
+  `id_distrito` BIGINT NOT NULL AUTO_INCREMENT,
+  `nome_distrito` VARCHAR(45) NULL,
+  `area` DECIMAL(10,1),
+  `zona` VARCHAR(45) NULL,
+  `data_criacao` DATETIME NULL,
+  `data_edicao` DATETIME NULL,
+  PRIMARY KEY (`id_distrito`)
+);
+
+CREATE TABLE IF NOT EXISTS `propriedade` (
+  `id_imovel` INT NOT NULL AUTO_INCREMENT,
+  `uso_iptu` VARCHAR(100) NULL,
+  `fk_distrito` BIGINT NOT NULL,
+  `data_criacao` DATETIME NOT NULL,
+  `data_edicao` DATETIME NOT NULL,
+   FOREIGN KEY (`fk_distrito`) REFERENCES distrito(`id_distrito`),
+   PRIMARY KEY (`id_imovel`)
+);
+
 CREATE TABLE IF NOT EXISTS `seguranca` (
-  `id_delegacia` INT PRIMARY KEY AUTO_INCREMENT,
-  `delegacia` VARCHAR(100),
-  `furtos_regiao` INT,
-  `roubos_cargas` INT,
-  `roubos` INT,
-  `roubos_veiculos` INT,
-  `furtos_veiculos` INT,
-  `latrocinios` INT,
-  `homicidio_doloso_acidente_transito` INT,
-  `homicidio_culposo_acidente_transito` INT,
-  `homicidio_culposo` INT,
-  `dt_ultima_coleta` YEAR
+  `id_delegacia` INT NOT NULL AUTO_INCREMENT,
+  `nome_regiao` VARCHAR(100) NULL,
+  `delegacia` VARCHAR(100) NULL,
+  `furtos_regiao` INT NULL,
+  `roubos_cargas` INT NULL,
+  `roubos` INT NULL,
+  `roubos_veiculos` INT NULL,
+  `furtos_veiculos` INT NULL,
+  `latrocinios` INT NULL,
+  `homicidio_doloso_acidente_transito` INT NULL,
+  `homicidio_culposo_acidente_transito` INT NULL,
+  `homicidio_culposo` INT NULL,
+  `ano_ultima_coleta` YEAR NULL,
+  `fk_distrito` BIGINT NOT NULL,
+  `data_criacao` DATETIME NULL,
+  `data_edicao` DATETIME NULL,
+  FOREIGN KEY (`fk_distrito`) REFERENCES distrito(`id_distrito`),
+  PRIMARY KEY (`id_delegacia`)
 );
 
--- Tabela: propriedades
-CREATE TABLE IF NOT EXISTS `propriedades` (
-  `id_imovel` INT PRIMARY KEY AUTO_INCREMENT,
-  `valor_transacao_declarado` DECIMAL(15,2),
-  `data_transacao` DATE,
-  `valor_transacao_referencial` DECIMAL(15,2),
-  `percentual_transmitido` DECIMAL(5,2),
-  `valor_proporcional_referencia_mercado` DECIMAL (15,2),
-  `registro_cartorio` VARCHAR(100),
-  `registro_propriedade` INT,
-  `area_terreno_m2` DECIMAL(10,2),
-  `area_construida_m2` DECIMAL(10,2),
-  `uso_iptu` VARCHAR(50),
-  `cep` VARCHAR(8),
-  `nome_endereco` VARCHAR(150),
-  `tipo_endereco` VARCHAR(50),
-  `endereco_completo` VARCHAR(255),
-  `estado` VARCHAR(2),
-  `bairro` VARCHAR(100),
-  `zona` VARCHAR(50),
-  `latitude` VARCHAR(20),
-  `longitude` VARCHAR(20),
-  `cidade` VARCHAR(100),
-  `codigo_ibge_cidade` INT,
-  `ddd` VARCHAR(2)
+CREATE TABLE IF NOT EXISTS `favorito` (
+  `fk_usuario` INT NOT NULL ,
+  `fk_empresa` INT NOT NULL,
+  `id_favorito` INT  NOT NULL,
+  `data_favorito` DATETIME NULL,
+  `data_edicao` DATETIME NULL,
+  `fk_distrito` BIGINT NOT NULL,
+FOREIGN KEY (`fk_distrito`) REFERENCES distrito(`id_distrito`),
+  PRIMARY KEY (`fk_usuario`, `fk_empresa`, `id_favorito`)
 );
 
--- Tabela: favoritos
-CREATE TABLE IF NOT EXISTS `favoritos` (
+CREATE TABLE IF NOT EXISTS `log` (
+  `id_logs` INT NOT NULL AUTO_INCREMENT,
+  `tipo_processo` VARCHAR(80) NOT NULL,
+  `status` VARCHAR(50) NULL,
+  `mensagem` VARCHAR(255) NULL,
+  `usuario` VARCHAR(90) NULL,
+  `data_criacao` DATETIME NULL,
+  `data_edicao` DATETIME NULL,
+  PRIMARY KEY (`id_logs`)
+);
+
+CREATE TABLE IF NOT EXISTS `acao` (
+  `id_acao` INT NOT NULL AUTO_INCREMENT,
+  `tipo` VARCHAR(45) NULL,
+  `descricao` VARCHAR(120) NULL,
+  `data_criacao` DATETIME NULL,
+  `data_edicao` DATETIME NULL,
+  PRIMARY KEY (`id_acao`)
+);
+
+CREATE TABLE IF NOT EXISTS `acao_de_usuario` (
+  `id_acao_usuario` INT  NOT NULL AUTO_INCREMENT primary key,
   `fk_usuario` INT NOT NULL,
   `fk_empresa` INT NOT NULL,
-  `fk_propriedade` INT NOT NULL,
-  `id_favorito` VARCHAR(45) NOT NULL,
-  `data_favorito` DATETIME,
-  PRIMARY KEY (`fk_usuario`, `fk_empresa`, `fk_propriedade`, `id_favorito`),
-  FOREIGN KEY (`fk_usuario`, `fk_empresa`) REFERENCES `usuarios` (`id_usuario`, `fk_empresa`),
-  FOREIGN KEY (`fk_propriedade`) REFERENCES `propriedades` (`id_imovel`)
+  `fk_acao` INT NOT NULL,
+  `data_criacao` DATETIME NULL,
+  `data_edicao` DATETIME NULL,
+  FOREIGN KEY (fk_empresa) REFERENCES empresa(id_empresa),
+  FOREIGN KEY (fk_usuario) REFERENCES usuario(fk_empresa),
+  FOREIGN KEY (fk_acao) REFERENCES acao(id_acao)
 );
 
--- Tabela: logs
-CREATE TABLE IF NOT EXISTS `logs` (
-  `id_logs` INT PRIMARY KEY AUTO_INCREMENT,
-  `data_hora` DATETIME,
-  `tipo_processo` VARCHAR(80),
-  `status` VARCHAR(50),
-  `mensagem` VARCHAR(255),
-  `usuarios` VARCHAR(90)
-);
 
-CREATE TABLE IF NOT EXISTS `acoes` (
-  `id_acao` INT PRIMARY KEY,
-  `tipo` VARCHAR(45),
-  `descricao` VARCHAR(120)
-);
-
-CREATE TABLE IF NOT EXISTS `acoesDeUsuario` (
-  `id_usuario` INT NOT NULL,
+CREATE TABLE IF NOT EXISTS `telefone` (
+  `id_telefone` INT NOT NULL AUTO_INCREMENT,
+  `telefone` CHAR(11) NULL,
   `fk_empresa` INT NOT NULL,
-  `id_acao` INT NOT NULL,
-  `dtAcao` DATETIME,
-  PRIMARY KEY (`id_usuario`, `fk_empresa`, `id_acao`),
-  FOREIGN KEY (`id_usuario`, `fk_empresa`) REFERENCES `usuarios` (`id_usuario`, `fk_empresa`),
-  FOREIGN KEY (`id_acao`) REFERENCES `acoes` (`id_acao`)
+  `data_criacao` DATETIME NULL,
+  `data_edicao` DATETIME NULL,
+  PRIMARY KEY (`id_telefone`),
+  FOREIGN KEY (fk_empresa) REFERENCES empresa(id_empresa)
+);
+
+CREATE TABLE IF NOT EXISTS `endereco` (
+  `id_endereco` INT NOT NULL AUTO_INCREMENT,
+  `rua` VARCHAR(75) NULL,
+  `bairro` VARCHAR(45) NULL,
+  `cep` CHAR(8) NULL,
+  `cidade` VARCHAR(55) NULL,
+  `estado` VARCHAR(45) NULL,
+  `uf` CHAR(2) NULL,
+  `fk_empresa` INT NOT NULL,
+  `data_criacao` DATETIME NULL,
+  `data_edicao` DATETIME NULL,
+  PRIMARY KEY (`id_endereco`),
+  FOREIGN KEY (fk_empresa) REFERENCES empresa(id_empresa)
+);
+
+CREATE TABLE IF NOT EXISTS `notificacao` (
+  `id_notificacacoes` INT NOT NULL AUTO_INCREMENT,
+  `canal` VARCHAR(45) NULL,
+  `usuario` VARCHAR(45) NULL,
+  `status_usuario` TINYINT NULL,
+  `fk_usuario` INT NOT NULL,
+  `fk_empresa` INT NOT NULL,
+  `fk_log` INT NOT NULL,
+  `data_criacao` DATETIME NULL,
+  `data_edicao` DATETIME NULL,
+  PRIMARY KEY (`id_notificacacoes`)
+);
+
+CREATE TABLE IF NOT EXISTS `info_regiao` (
+  `udh_id` INT NOT NULL AUTO_INCREMENT,
+  `nome_udh` VARCHAR(500) NULL,
+  `codigo_municipio` INT NULL,
+  `nome_municipio` VARCHAR(45) NULL,
+  `codigo_regiao` INT NULL,
+  `nome_regiao` VARCHAR(45) NULL,
+  `renda_domiciliar_quinto_mais_pobre` DOUBLE NULL,
+  `renda_domiciliar_segundo_quinto_mais_pobre` DOUBLE NULL,
+  `renda_domiciliar_terceiro_quinto_mais_pobre` DOUBLE NULL,
+  `renda_domiciliar_quarto_quinto_mais_pobre` DOUBLE NULL,
+  `renda_domiciliar_quinto_mais_rico` DOUBLE NULL,
+  `populacao_total` INT NULL,
+  `codigo_distrito` INT NULL,
+  `nome_distrito` VARCHAR(45) NULL,
+  `divisao_regional` VARCHAR(45) NULL,
+  `nome_prefeitura_regional` VARCHAR(45) NULL,
+  `data_criacao` DATETIME NULL,
+  `data_edicao` DATETIME NULL,
+  `fk_distrito` BIGINT NULL,
+  FOREIGN KEY (`fk_distrito`) REFERENCES distrito(`id_distrito`),
+  PRIMARY KEY (`udh_id`)
+);
+
+CREATE TABLE IF NOT EXISTS `educacao` (
+  `id_educacao` INT NOT NULL AUTO_INCREMENT,
+  `nome_escola` VARCHAR(155) NULL,
+  `nome_distrito` VARCHAR(45) NULL,
+  `data_criacao` DATETIME NULL,
+  `data_edicao` DATETIME NULL,
+  `fk_distrito` BIGINT NOT NULL,
+  FOREIGN KEY (`fk_distrito`) REFERENCES distrito(`id_distrito`),
+  PRIMARY KEY (`id_educacao`)
+);
+
+CREATE TABLE IF NOT EXISTS `saude` (
+  `id_saude` INT NOT NULL AUTO_INCREMENT,
+  `nome_distrito` VARCHAR(45) NULL,
+  `nome_unidade` VARCHAR(155) NULL,
+  `tipo_unidade` VARCHAR(155) NULL,
+  `data_criacao` DATETIME NULL,
+  `data_edicao` DATETIME NULL,
+  `fk_distrito` BIGINT NOT NULL,
+  FOREIGN KEY (`fk_distrito`) REFERENCES distrito(`id_distrito`),
+  PRIMARY KEY (`id_saude`)
 );
 
 CREATE TABLE IF NOT EXISTS `precificacao` (
-  `id_usuario` INT NOT NULL,
-  `fk_empresa` INT NOT NULL,
-  `id_acao` INT NOT NULL,
-  `dtAcao` DATETIME,
-  PRIMARY KEY (`id_usuario`, `fk_empresa`, `id_acao`),
-  FOREIGN KEY (`id_usuario`, `fk_empresa`) REFERENCES `usuarios` (`id_usuario`, `fk_empresa`),
-  FOREIGN KEY (`id_acao`) REFERENCES `acoes` (`id_acao`)
-)
+  `id_precificacao` INT NOT NULL AUTO_INCREMENT,
+  `preco` DECIMAL(10,2) NULL,
+  `data_precificacao` VARCHAR(45) NULL,
+  `area` DECIMAL(10,2) NULL,
+  `data_criacao` DATETIME NULL,
+  `data_edicao` DATETIME NULL,
+  `fk_distrito` BIGINT NOT NULL,
+  FOREIGN KEY (`fk_distrito`) REFERENCES distrito(`id_distrito`),
+  PRIMARY KEY (`id_precificacao`)
+);
+
+CREATE TABLE IF NOT EXISTS `mobilidade` (
+  `id_mobilidade` INT NOT NULL AUTO_INCREMENT,
+  `nome_distrito` VARCHAR(100) NULL,
+  `qtd_pontos_onibus` DECIMAL(10,2) NULL,
+  `qtd_estacoes_trem_metro` DECIMAL(10,2) NULL,
+  `data_criacao` DATETIME NULL,
+  `data_edicao` DATETIME NULL,
+  `fk_distrito` BIGINT NOT NULL,
+  FOREIGN KEY (`fk_distrito`) REFERENCES distrito(`id_distrito`),
+  PRIMARY KEY (`id_mobilidade`)
+);
+
+CREATE TABLE IF NOT EXISTS `parque` (
+  `id_parques` INT NOT NULL AUTO_INCREMENT,
+  `nome_parque` VARCHAR(100) NULL UNIQUE,
+  `nome_distrito` VARCHAR(45) NULL,
+  `fk_distrito` BIGINT NOT NULL,
+  `data_criacao` DATETIME NULL,
+  `data_edicao` DATETIME NULL,
+  FOREIGN KEY (`fk_distrito`) REFERENCES distrito(`id_distrito`),
+  PRIMARY KEY (`id_parques`)
+);

@@ -1,6 +1,5 @@
 package com.databrick.utils;
 
-import com.databrick.service.JDBCService;
 import org.apache.logging.log4j.Level;
 
 import java.time.LocalDateTime;
