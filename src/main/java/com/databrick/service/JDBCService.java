@@ -155,13 +155,14 @@ public class JDBCService implements LoggingUtility.LogSaver {
 
     public boolean saveDistrict(District district) {
         try {
-            String sqlScript = "INSERT INTO distrito (nome_distrito, id_distrito, area_total) VALUES (?, ?, ?)";
+            String sqlScript = "INSERT INTO distrito (nome_distrito, id_distrito, area_total, zona) VALUES (?, ?, ?, ?)";
 
             template.update(connection -> {
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlScript);
                 preparedStatement.setObject(1, district.getDistrictName());
                 preparedStatement.setObject(2, district.getDistrictCode());
                 preparedStatement.setObject(3, district.getTotalArea());
+                preparedStatement.setObject(4, district.getZone());
                 return preparedStatement;
             });
             return true;

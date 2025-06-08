@@ -4,11 +4,13 @@ public class District {
     private String districtName;
     private Long districtCode;
     private Double totalArea;
+    private String zone;
 
-    public District(String districtName, String districtCode, String totalArea) {
+    public District(String districtName, String districtCode, String totalArea, String zone) {
         this.districtName = districtName;
         this.districtCode = parseLong(districtCode);
         this.totalArea = parseDouble(totalArea);
+        this.zone = zone;
     }
 
     private Long parseLong(String value) {
@@ -28,6 +30,14 @@ public class District {
         } catch (NumberFormatException e) {
             return 0.0;
         }
+    }
+
+    public String getZone() {
+        return zone;
+    }
+
+    public void setZone(String zone) {
+        this.zone = zone;
     }
 
     public Double getTotalArea() {
