@@ -13,6 +13,7 @@ import com.databrick.service.SecurityService;
 import com.databrick.service.TransportationService;
 import com.databrick.utils.LoggingUtility;
 import org.apache.logging.log4j.Level;
+import org.apache.poi.util.IOUtils;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -35,6 +36,8 @@ public class Main {
     private static final S3Service bucketService = new S3Service(AppConfig.get("bucket.name"));
     public static void main(String[] args) {
         log.registerLog(Level.INFO, "Aplicação iniciada");
+
+        IOUtils.setByteArrayMaxOverride(250_000_000);
 
         try {
             log.registerLog(Level.INFO, "Iniciando leitura dos valores das células");
@@ -76,7 +79,7 @@ public class Main {
                 transportationFiles = bucketService.bucketObjectList(AppConfig.get("bucket.transportation.file"));
             }
 
-            districtService.extractionTransportationData(districtFiles);
+            districtService.extractionDistrictData(districtFiles);
             parksService.extractionParksData(parksFiles);
             infoRegionService.extractInfoRegionData(infoRegionFiles);
             securityService.extractionSecurityData(securityFiles);
