@@ -48,7 +48,7 @@ public class DistrictService {
                         }
 
                         try {
-                            District district = new District(cellValues.get(0), cellValues.get(1), cellValues.get(2), cellValues.get(4));
+                            District district = new District(cellValues.get(0), cellValues.get(1), cellValues.get(2), cellValues.get(4), cellValues.get(5));
                             batchList.add(district);
 
                             // Processa o lote quando atingir o tamanho definido

@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS `distrito` (
   `nome_distrito` VARCHAR(45) NULL,
   `area` DECIMAL(10,1),
   `zona` VARCHAR(45) NULL,
+  `populacao` DECIMAL(10) NULL,
   `data_criacao` DATETIME NULL,
   `data_edicao` DATETIME NULL,
   PRIMARY KEY (`id_distrito`)

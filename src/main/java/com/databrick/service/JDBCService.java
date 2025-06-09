@@ -146,7 +146,7 @@ public class JDBCService implements LoggingUtility.LogSaver {
 
 
     public boolean saveDistrict(List<District> districts) {
-        String sqlScript = "INSERT INTO distrito (nome_distrito, id_distrito, area, zona) VALUES (?, ?, ?, ?)";
+        String sqlScript = "INSERT INTO distrito (nome_distrito, id_distrito, area, zona, populacao) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection connection = conexao.getConexao().getConnection();
              PreparedStatement districtStmt = connection.prepareStatement(sqlScript)) {
@@ -158,6 +158,7 @@ public class JDBCService implements LoggingUtility.LogSaver {
                 districtStmt.setObject(2, district.getDistrictCode());
                 districtStmt.setObject(3, district.getTotalArea());
                 districtStmt.setString(4, district.getZone());
+                districtStmt.setObject(5, district.getPopulationTotal());
                 districtStmt.addBatch();
             }
 
