@@ -39,6 +39,10 @@ public class Main {
 
         IOUtils.setByteArrayMaxOverride(250_000_000);
 
+        String webhookUrl = System.getenv("SLACK_WEBHOOK_URL");
+        String mensagem = "Olá! Esta mensagem veio do meu JAR em Java!";
+        SlackUtility.sendSlackMessage(webhookUrl, mensagem);
+
         try {
             log.registerLog(Level.INFO, "Iniciando leitura dos valores das células");
 
