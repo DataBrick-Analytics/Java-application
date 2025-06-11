@@ -39,6 +39,9 @@ public class Main {
 
         IOUtils.setByteArrayMaxOverride(250_000_000);
 
+        String mensagem = "Olá! Esta mensagem veio do meu JAR em Java!";
+        SlackUtility.sendSlackMessage(mensagem);
+
         try {
             log.registerLog(Level.INFO, "Iniciando leitura dos valores das células");
 
