@@ -54,15 +54,7 @@ public class SlackUtility {
             ConnectionBD connectionBD = new ConnectionBD();
             JdbcTemplate jdbcTemplate = new JdbcTemplate(connectionBD.getConexao());
 
-            String sql = "SELECT * FROM notificacao WHERE id_notificacao > ? ORDER BY id_notificacao DESC LIMIT 1";
-            List<Map<String, Object>> dados = jdbcTemplate.queryForList(sql, ultimoIdLido);
-
-            for (int i = 0; i < dados.size(); i++) {
-                Map<String, Object> linha = dados.get(i);
-                int id = (int) linha.get("id_notificacao");
-                sendSlackMessage("Novas propriedades encontradas, verifique!");
-                ultimoIdLido = id;
-            }
+            sendSlackMessage("Novas propriedades encontradas, verifique!");
 
         } catch (Exception exception) {
             exception.printStackTrace();
