@@ -1,22 +1,23 @@
 package com.databrick;
 
+import com.databrick.config.AppConfig;
 import com.databrick.config.ConnectionBD;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
 public class SlackUtility {
-    private static final String webhookUrl = "https://hooks.slack.com/services/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";
     static int ultimoIdLido = 0;
 
-    public static void sendSlackMessage(String webhookUrl, String message) {
+    public static void sendSlackMessage(String message) {
 
         try {
-            URL url = new URL(webhookUrl);
+            URL url = URI.create(AppConfig.get("slack.webhookUrl")).toURL();
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             conn.setRequestMethod("POST");
@@ -53,13 +54,13 @@ public class SlackUtility {
             ConnectionBD connectionBD = new ConnectionBD();
             JdbcTemplate jdbcTemplate = new JdbcTemplate(connectionBD.getConexao());
 
-            String sql = "SELECT * FROM notificacao WHERE id_notificacacoes > ? ORDER BY id_notificacacoes DESC LIMIT 1";
+            String sql = "SELECT * FROM notificacao WHERE id_notificacao > ? ORDER BY id_notificacao DESC LIMIT 1";
             List<Map<String, Object>> dados = jdbcTemplate.queryForList(sql, ultimoIdLido);
 
             for (int i = 0; i < dados.size(); i++) {
                 Map<String, Object> linha = dados.get(i);
-                int id = (int) linha.get("id_notificacacoes");
-                sendSlackMessage(webhookUrl, "Novas propriedades encontradas, verifique!");
+                int id = (int) linha.get("id_notificacao");
+                sendSlackMessage("Novas propriedades encontradas, verifique!");
                 ultimoIdLido = id;
             }
 
