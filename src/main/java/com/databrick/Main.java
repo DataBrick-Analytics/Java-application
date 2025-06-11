@@ -41,7 +41,7 @@ public class Main {
 
         String mensagem = "Olá! Esta mensagem veio do meu JAR em Java!";
         SlackUtility.sendSlackMessage(mensagem);
-
+        SlackUtility.fetchDataAndSendToSlack();
         try {
             log.registerLog(Level.INFO, "Iniciando leitura dos valores das células");
 
