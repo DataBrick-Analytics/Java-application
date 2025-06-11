@@ -9,7 +9,7 @@ public class InfoRegionValue {
     private Double fourthFifthPoorestHouseholdIncome;
     private Double fifthRichestHouseholdIncome;
     private Integer totalPopulation;
-    private Integer districtCode;
+    private Long districtCode;
     private Integer regionalDivision;
 
     public InfoRegionValue(String municipalityCode, String regionCode, String fifthPoorestHouseholdIncome, String secondFifthPoorestHouseholdIncome, String thirdFifthPoorestHouseholdIncome, String fourthFifthPoorestHouseholdIncome, String fifthRichestHouseholdIncome, String totalPopulation, String districtCode, String regionalDivision) {
@@ -21,7 +21,7 @@ public class InfoRegionValue {
         this.fourthFifthPoorestHouseholdIncome = parseDouble(fourthFifthPoorestHouseholdIncome);
         this.fifthRichestHouseholdIncome = parseDouble(fifthRichestHouseholdIncome);
         this.totalPopulation = parseInteger(totalPopulation);
-        this.districtCode = parseInteger(districtCode);
+        this.districtCode = parseLong(districtCode);
         this.regionalDivision = parseInteger(regionalDivision);
     }
 
@@ -89,11 +89,11 @@ public class InfoRegionValue {
         this.totalPopulation = totalPopulation;
     }
 
-    public Integer getDistrictCode() {
+    public Long getDistrictCode() {
         return districtCode;
     }
 
-    public void setDistrictCode(Integer districtCode) {
+    public void setDistrictCode(Long districtCode) {
         this.districtCode = districtCode;
     }
 
@@ -121,5 +121,12 @@ public class InfoRegionValue {
         }
     }
 
-
+    private Long parseLong(String value) {
+        if (value == null || value.isBlank()) return null;
+        try {
+            return Long.valueOf(value.replace(",", "").replace(".", ""));
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
 }

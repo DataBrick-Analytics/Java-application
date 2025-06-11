@@ -14,7 +14,7 @@ public class Pricing {
     private Long districtCode;
 
     public Pricing(String registeredDate, String price, String area, String districtName, String districtCode) {
-        this.registeredDate = parseDate(registeredDate);
+        this.registeredDate = Date.valueOf(registeredDate);
         this.price = parseDouble(price);
         this.area = parseDouble(area);
         this.districtName = addressToRegion(districtName);
@@ -86,23 +86,6 @@ public class Pricing {
 
         address = address.strip();
         return address;
-    }
-
-    public Date parseDate(String data) {
-        if (data == null || data.isBlank()) return null;
-
-        List<String> patterns = List.of(
-                "YYYY-MM-DDTHH:MM:SSZ\n"
-        );
-
-        for (String pattern : patterns) {
-            try {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-                LocalDateTime dateTime = LocalDateTime.parse(data, formatter);
-                return Date.valueOf(dateTime.toLocalDate());
-            } catch (Exception ignored) {}
-        }
-        return null;
     }
 
     private Long parseLong(String value) {

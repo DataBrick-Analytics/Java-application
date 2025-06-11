@@ -5,12 +5,23 @@ public class District {
     private Long districtCode;
     private Double totalArea;
     private String zone;
+    private Integer populationTotal;
 
-    public District(String districtName, String districtCode, String totalArea, String zone) {
+    public District(String districtName, String districtCode, String totalArea, String zone, String populationTotal) {
         this.districtName = districtName;
         this.districtCode = parseLong(districtCode);
         this.totalArea = parseDouble(totalArea);
         this.zone = zone;
+        this.populationTotal = parseInteger(populationTotal);
+    }
+
+    private Integer parseInteger(String value) {
+        if (value == null || value.isBlank()) return null;
+        try {
+            return Integer.valueOf(value.replace(",", "").replace(".", ""));
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
     private Long parseLong(String value) {
@@ -30,6 +41,14 @@ public class District {
         } catch (NumberFormatException e) {
             return 0.0;
         }
+    }
+
+    public Integer getPopulationTotal() {
+        return populationTotal;
+    }
+
+    public void setPopulationTotal(Integer populationTotal) {
+        this.populationTotal = populationTotal;
     }
 
     public String getZone() {
